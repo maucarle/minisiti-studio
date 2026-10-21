@@ -1,0 +1,3 @@
+# Fase 0: il minisito non è ancora pubblico. Togliere il blocco all'apertura (Fase 1).
+User-agent: *
+Disallow: /
