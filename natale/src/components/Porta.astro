@@ -5,7 +5,26 @@
 // Senza JavaScript o con il movimento ridotto le proposte sono una sezione normale, ferma e completa.
 import fs from 'node:fs';
 import path from 'node:path';
-import { proposte } from '../data/natale';
+import { proposte, MODO_PORTA } from '../data/natale';
+
+// La porta vera, se c'è: dimensioni lette dal JPEG (marcatore SOF), per dare al vano le sue proporzioni.
+function misureJpeg(file: string): { w: number; h: number } | null {
+  const b = fs.readFileSync(file);
+  let i = 2;
+  while (i < b.length) {
+    if (b[i] !== 0xff) { i++; continue; }
+    const m = b[i + 1];
+    if (m >= 0xc0 && m <= 0xcf && m !== 0xc4 && m !== 0xc8 && m !== 0xcc) return { h: b.readUInt16BE(i + 5), w: b.readUInt16BE(i + 7) };
+    i += 2 + b.readUInt16BE(i + 2);
+  }
+  return null;
+}
+const filePorta = path.join(process.cwd(), 'public', 'foto', 'set', 'porta.jpg');
+const misure = fs.existsSync(filePorta) ? misureJpeg(filePorta) : null;
+const foto = misure ? '/foto/set/porta.jpg' : null;
+// rapporto larghezza/altezza del vano: metà+metà = la porta vera; doppia = due porte affiancate
+const rapporto = misure ? (MODO_PORTA === 'doppia' ? 2 : 1) * misure.w / misure.h : 0.5;
+const stileVano = `--rapporto:${rapporto};` + (foto ? `--porta:url(${foto});--dimensione:${MODO_PORTA === 'doppia' ? '100% 100%' : '200% 100%'};` : '');
 // Dentro la porta: l'interno della baita (la finestra col camino) dalla foto del set; la foto vera quando c'è.
 const interno = fs.existsSync(path.join(process.cwd(), 'public', 'foto', 'set', 'set-01.jpg')) ? '/foto/set/set-01.jpg' : '/foto/riferimento/set.jpg';
 ---
@@ -13,11 +32,20 @@ const interno = fs.existsSync(path.join(process.cwd(), 'public', 'foto', 'set', 
   <div class="davanti" aria-hidden="true">
     <p class="occhiello">Le proposte</p>
     <p class="invito">Aprite la porta</p>
-    <div class="vano">
+    <div class:list={['vano', { foto }]} style={stileVano}>
       <div class="alone"></div>
       <div class="interno"><img src={interno} alt="" decoding="async" /><div class="luce"></div></div>
-      <div class="battente sinistro"><span class="cardine alto"></span><span class="cardine basso"></span><span class="maniglia"></span></div>
-      <div class="battente destro"><span class="cardine alto"></span><span class="cardine basso"></span><span class="maniglia"></span><span class="targa">2026</span></div>
+      {foto ? (
+        <>
+          <div class="battente sinistro"><span class="faccia"></span></div>
+          <div class="battente destro"><span class="faccia specchio"></span></div>
+        </>
+      ) : (
+        <>
+          <div class="battente sinistro"><span class="cardine alto"></span><span class="cardine basso"></span><span class="maniglia"></span></div>
+          <div class="battente destro"><span class="cardine alto"></span><span class="cardine basso"></span><span class="maniglia"></span><span class="targa">2026</span></div>
+        </>
+      )}
     </div>
     <p class="scorri">scorrete</p>
   </div>
@@ -104,7 +132,7 @@ const interno = fs.existsSync(path.join(process.cwd(), 'public', 'foto', 'set', 
   @keyframes respiro{0%,100%{transform:scaleY(.4);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}}
 
   /* La porta: luce 30 su 64, montante in noce, battenti in bordeaux a sei assi con due traverse. */
-  .vano{position:relative;width:min(62vw,420px,calc(64svh * .5));aspect-ratio:1 / 2;perspective:1300px;background:#2A1E17;box-shadow:0 0 0 12px #5A3B26,0 0 0 13px #3E2A1C,0 26px 50px -24px rgba(40,20,10,.7)}
+  .vano{position:relative;width:min(62vw,420px,calc(64svh * var(--rapporto)));aspect-ratio:var(--rapporto);perspective:1300px;background:#2A1E17;box-shadow:0 0 0 12px #5A3B26,0 0 0 13px #3E2A1C,0 26px 50px -24px rgba(40,20,10,.7)}
   .alone{position:absolute;inset:-35% -60%;background:radial-gradient(closest-side,rgba(240,196,120,.55),rgba(240,196,120,.18) 55%,transparent 75%);opacity:0;pointer-events:none;will-change:transform,opacity}
   .interno{position:absolute;inset:0;overflow:hidden;background:#2A1E17}
   .interno img{width:100%;height:100%;object-fit:cover;object-position:29% 42%;filter:blur(2px) brightness(1.08) saturate(1.1);will-change:transform}
@@ -114,6 +142,10 @@ const interno = fs.existsSync(path.join(process.cwd(), 'public', 'foto', 'set', 
       linear-gradient(180deg,transparent 0 16%,rgba(0,0,0,.22) 16% 17%,#7A1D24 17% 24%,rgba(0,0,0,.25) 24% 25%,transparent 25% 75%,rgba(0,0,0,.22) 75% 76%,#7A1D24 76% 83%,rgba(0,0,0,.25) 83% 84%,transparent 84%),
       repeating-linear-gradient(90deg,#6E191F 0 calc(33.333% - 2px),#4A0F14 calc(33.333% - 2px) 33.333%),
       #6E191F}
+  /* Battenti fotografici: la stessa foto, il destro specchiato. In 'meta' ognuno mostra la metà sinistra della porta. */
+  .vano.foto .battente{background:#4A0F14}
+  .faccia{position:absolute;inset:0;background-image:var(--porta);background-size:var(--dimensione);background-position:left center;background-repeat:no-repeat}
+  .faccia.specchio{transform:scaleX(-1)}
   .battente::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(255,255,255,.05),rgba(0,0,0,.18));pointer-events:none}
   .sinistro{left:0;transform-origin:left center;border-right:1px solid #3a0b0f}
   .destro{right:0;transform-origin:right center;border-left:1px solid #3a0b0f}

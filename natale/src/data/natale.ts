@@ -6,6 +6,14 @@
 /** false = sito in prova: noindex e robots chiusi. Si mette a true all'apertura, dopo il sì di Elisabetta. */
 export const APERTO = false;
 
+/**
+ * Battenti della porta che si apre in home. Se esiste public/foto/set/porta.jpg (la porta vera, frontale,
+ * ritagliata sul solo battente, niente davanti) i battenti diventano fotografici, altrimenti restano disegnati.
+ * 'meta'   = ogni battente è metà della porta, il destro è il sinistro specchiato: stesse proporzioni della porta vera.
+ * 'doppia' = ogni battente è la porta intera, il destro specchiato: una porta doppia, larga il doppio.
+ */
+export const MODO_PORTA: 'meta' | 'doppia' = 'meta';
+
 export const contatti = {
   telefono: '333 6265276',
   whatsapp: '393336265276',
