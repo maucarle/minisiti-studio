@@ -1,0 +1,134 @@
+---
+// Il momento firma: «Natale è alle porte». Scorrendo, i due battenti della porta rossa del set si aprono,
+// entra la luce calda e dietro compaiono le tre proposte, che poi riempiono lo schermo.
+// La porta è disegnata (assi, traverse, cardini): la porta nella foto di riferimento è larga 220 px e ingrandita verrebbe sgranata.
+// Senza JavaScript o con il movimento ridotto le proposte sono una sezione normale, ferma e completa.
+import fs from 'node:fs';
+import path from 'node:path';
+import { proposte } from '../data/natale';
+// Dentro la porta: l'interno della baita (la finestra col camino) dalla foto del set; la foto vera quando c'è.
+const interno = fs.existsSync(path.join(process.cwd(), 'public', 'foto', 'set', 'set-01.jpg')) ? '/foto/set/set-01.jpg' : '/foto/riferimento/set.jpg';
+---
+<section class="porta" data-porta aria-labelledby="titolo-porta">
+  <div class="davanti" aria-hidden="true">
+    <p class="occhiello">Le proposte</p>
+    <p class="invito">Aprite la porta</p>
+    <div class="vano">
+      <div class="alone"></div>
+      <div class="interno"><img src={interno} alt="" decoding="async" /><div class="luce"></div></div>
+      <div class="battente sinistro"><span class="cardine alto"></span><span class="cardine basso"></span><span class="maniglia"></span></div>
+      <div class="battente destro"><span class="cardine alto"></span><span class="cardine basso"></span><span class="maniglia"></span><span class="targa">2026</span></div>
+    </div>
+    <p class="scorri">scorrete</p>
+  </div>
+
+  <div class="dietro">
+    <div class="contenuto wrap">
+      <p class="occhiello" style="color:var(--oro-chiaro)">Le proposte</p>
+      <h2 id="titolo-porta">Natale sta arrivando, il vostro ritratto anche.</h2>
+      <ol class="elenco">
+        {proposte.map((p) => (
+          <li>
+            <a href={`/sessioni/#${p.id}`}>
+              <span class="nome">{p.nome}</span>
+              <span class="quando">{p.quando}</span>
+              <span class="prezzo">{p.prezzo} €</span>
+            </a>
+          </li>
+        ))}
+      </ol>
+      <a class="bottone chiaro-su-scuro" href="/sessioni/">Vedi cosa c'è in ogni proposta</a>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  gsap.registerPlugin(ScrollTrigger);
+
+  const sezione = document.querySelector<HTMLElement>('[data-porta]');
+  if (sezione) {
+    const mm = gsap.matchMedia();
+    mm.add('(prefers-reduced-motion: no-preference)', () => {
+      sezione.classList.add('animata');
+      const vano = sezione.querySelector<HTMLElement>('.vano')!;
+      const dietro = sezione.querySelector<HTMLElement>('.dietro')!;
+      // il ritaglio iniziale del pannello coincide con il vano della porta (ricalcolato a ogni ridimensionamento)
+      const ritaglio = () => {
+        const s = sezione.getBoundingClientRect(), v = vano.getBoundingClientRect();
+        return `inset(${v.top - s.top}px ${s.right - v.right}px ${s.bottom - v.bottom}px ${v.left - s.left}px)`;
+      };
+      const tl = gsap.timeline({
+        defaults: { ease: 'none' },
+        scrollTrigger: { trigger: sezione, start: 'top top', end: '+=190%', pin: true, scrub: 0.6, invalidateOnRefresh: true },
+      });
+      tl.to('.porta .scorri, .porta .invito', { opacity: 0, duration: 0.12 }, 0)
+        .to('.porta .battente.sinistro', { rotateY: -100, duration: 0.5, ease: 'power1.inOut' }, 0.1)
+        .to('.porta .battente.destro', { rotateY: 100, duration: 0.5, ease: 'power1.inOut' }, 0.1)
+        .fromTo('.porta .interno img', { scale: 1.15 }, { scale: 1, duration: 0.6 }, 0.1)
+        .fromTo('.porta .luce', { opacity: 0.9 }, { opacity: 0.35, duration: 0.45 }, 0.15)
+        .fromTo('.porta .alone', { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.45 }, 0.15)
+        .fromTo(dietro, { clipPath: ritaglio, opacity: 0 }, { clipPath: 'inset(0px 0px 0px 0px)', opacity: 1, duration: 0.4, ease: 'power2.inOut' }, 0.5)
+        .from('.porta .dietro .contenuto > *', { opacity: 0, y: 26, stagger: 0.04, duration: 0.2 }, 0.72)
+        .to({}, { duration: 0.12 });
+      return () => sezione.classList.remove('animata');
+    });
+  }
+</script>
+
+<style>
+  /* Senza JS o con movimento ridotto: sezione normale verde bosco con le proposte. */
+  .porta{position:relative;background:var(--crema)}
+  .davanti{display:none}
+  .dietro{background:var(--bosco);color:var(--crema)}
+  .contenuto{display:flex;flex-direction:column;gap:22px;padding-block:clamp(56px,9vw,96px)}
+  .dietro h2{color:var(--crema);font:italic 500 clamp(36px,5.6vw,62px)/1.04 var(--display);max-width:16ch}
+  .elenco{list-style:none;margin:0;padding:0;border-top:1px solid rgba(227,199,166,.55)}
+  .elenco a{display:grid;grid-template-columns:1.2fr 1.6fr auto;align-items:baseline;gap:4px 24px;padding-block:18px;border-bottom:1px solid rgba(227,199,166,.3);color:var(--crema);text-decoration:none}
+  .elenco a:hover .nome{font-style:italic}
+  .elenco .nome{font:500 clamp(27px,3.3vw,36px)/1.1 var(--display);color:var(--oro-chiaro)}
+  .elenco .quando{font-size:14.5px;color:rgba(245,240,228,.78)}
+  .elenco .prezzo{font:500 clamp(26px,3vw,34px)/1 var(--display);font-variant-numeric:lining-nums}
+  .chiaro-su-scuro{align-self:flex-start;background:var(--crema);color:var(--bosco)}
+  .chiaro-su-scuro:hover{background:var(--oro-chiaro);color:var(--bosco)}
+
+  /* Con l'animazione: la scena a tutto schermo, la porta davanti e il pannello dietro. */
+  .porta.animata{height:100vh;height:100svh;overflow:hidden}
+  .porta.animata .davanti{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px var(--gutter-d) 24px var(--gutter)}
+  .porta.animata .dietro{position:absolute;inset:0;display:flex;align-items:center;opacity:0;will-change:clip-path}
+  .porta.animata .contenuto{width:100%;padding-block:24px}
+  .invito{font:italic 500 clamp(34px,6vw,58px)/1 var(--display);color:var(--bordeaux)}
+  .scorri{font:600 10.5px/1 var(--sans);letter-spacing:.3em;text-transform:uppercase;color:var(--tenue)}
+  .scorri::after{content:"";display:block;width:1px;height:28px;margin:10px auto 0;background:var(--tenue);animation:respiro 2.2s ease-in-out infinite}
+  @keyframes respiro{0%,100%{transform:scaleY(.4);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}}
+
+  /* La porta: luce 30 su 64, montante in noce, battenti in bordeaux a sei assi con due traverse. */
+  .vano{position:relative;width:min(62vw,420px,calc(64svh * .5));aspect-ratio:1 / 2;perspective:1300px;background:#2A1E17;box-shadow:0 0 0 12px #5A3B26,0 0 0 13px #3E2A1C,0 26px 50px -24px rgba(40,20,10,.7)}
+  .alone{position:absolute;inset:-35% -60%;background:radial-gradient(closest-side,rgba(240,196,120,.55),rgba(240,196,120,.18) 55%,transparent 75%);opacity:0;pointer-events:none;will-change:transform,opacity}
+  .interno{position:absolute;inset:0;overflow:hidden;background:#2A1E17}
+  .interno img{width:100%;height:100%;object-fit:cover;object-position:29% 42%;filter:blur(2px) brightness(1.08) saturate(1.1);will-change:transform}
+  .luce{position:absolute;inset:0;background:radial-gradient(ellipse 80% 70% at 50% 55%,rgba(247,223,168,.15),rgba(42,30,23,.75));will-change:opacity}
+  .battente{position:absolute;top:0;bottom:0;width:50%;transform-style:preserve-3d;will-change:transform;
+    background:
+      linear-gradient(180deg,transparent 0 16%,rgba(0,0,0,.22) 16% 17%,#7A1D24 17% 24%,rgba(0,0,0,.25) 24% 25%,transparent 25% 75%,rgba(0,0,0,.22) 75% 76%,#7A1D24 76% 83%,rgba(0,0,0,.25) 83% 84%,transparent 84%),
+      repeating-linear-gradient(90deg,#6E191F 0 calc(33.333% - 2px),#4A0F14 calc(33.333% - 2px) 33.333%),
+      #6E191F}
+  .battente::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(255,255,255,.05),rgba(0,0,0,.18));pointer-events:none}
+  .sinistro{left:0;transform-origin:left center;border-right:1px solid #3a0b0f}
+  .destro{right:0;transform-origin:right center;border-left:1px solid #3a0b0f}
+  .cardine{position:absolute;width:46%;height:9px;background:#24201D;border-radius:2px;box-shadow:inset 0 1px 0 rgba(255,255,255,.12)}
+  .sinistro .cardine{left:0}
+  .destro .cardine{right:0}
+  .cardine.alto{top:19.5%}
+  .cardine.basso{top:78.5%}
+  .maniglia{position:absolute;top:50%;width:18px;height:18px;margin-top:-9px;border:3px solid #24201D;border-radius:50%}
+  .sinistro .maniglia{right:8px}
+  .destro .maniglia{left:8px}
+  .targa{position:absolute;top:36%;left:50%;transform:translateX(-50%);font:600 10px/1 var(--sans);letter-spacing:.18em;color:#3A2416;background:#D9B98F;padding:5px 7px;border-radius:1px}
+
+  @media (max-width:640px){
+    .elenco a{grid-template-columns:1fr auto}
+    .elenco .quando{grid-column:1 / -1;grid-row:2}
+  }
+</style>

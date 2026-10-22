@@ -1,7 +1,9 @@
 ---
 import Base from '../layouts/Base.astro';
 import Foto from '../components/Foto.astro';
-import { proposte, voci, linkWhatsApp } from '../data/natale';
+import VedoNonVedo from '../components/VedoNonVedo.astro';
+import Porta from '../components/Porta.astro';
+import { voci, linkWhatsApp } from '../data/natale';
 ---
 <Base
   title="Natale 2026 · Il set di Natale di Elisabetta Acquaviva, Rimini"
@@ -10,11 +12,11 @@ import { proposte, voci, linkWhatsApp } from '../data/natale';
 >
   <section class="apertura wrap">
     <h1 class="titolo appare">Natale</h1>
-    <p class="sotto appare">è alle porte.</p>
+    <p class="sotto parole" data-subito>è alle porte.</p>
   </section>
 
   <div class="wrap">
-    <Foto src="set/set-01.jpg" alt="Il set di Natale 2026: la baita di legno con la porta rossa" etichetta="Il set di Natale 2026 · la foto arriva a giorni" rapporto="16 / 9" caricamento="eager" />
+    <VedoNonVedo alt="Il set di Natale 2026: la baita di legno con la porta rossa" nota="Immagine di riferimento del set: le foto vere arrivano a giorni." />
   </div>
   <div class="wrap">
     <div class="fascia">
@@ -24,7 +26,7 @@ import { proposte, voci, linkWhatsApp } from '../data/natale';
   </div>
 
   <section class="sezione wrap stretto pila">
-    <p class="lead">.... e quest'anno una porta c'è davvero.</p>
+    <p class="lead parole">.... e quest'anno una porta c'è davvero.</p>
     <p>Quest'anno il set di Natale è una baita di legno: le lucine accese, i rami con le arance secche, la slitta appoggiata al muro, la legna pronta per il fuoco.... e una porta rossa, da aprire insieme.</p>
     <p>E quest'anno non c'è solo la foto di Natale: con i due progetti più lunghi vi portate a casa anche il ritratto della vostra famiglia, quello da appendere tutto l'anno.</p>
   </section>
@@ -44,25 +46,7 @@ import { proposte, voci, linkWhatsApp } from '../data/natale';
     </figure>
   </section>
 
-  <section class="sezione wrap pila" style="gap:34px">
-    <div class="pila stretto" style="gap:12px">
-      <p class="occhiello">Le proposte</p>
-      <h2>Natale sta arrivando, il vostro ritratto anche.</h2>
-      <p>Oltre alla mini sessione nel weekend, in settimana ci sono due sessioni più lunghe, pensate per portarvi a casa anche il ritratto della vostra famiglia, già in cornice: quello da appendere in casa tutto l'anno, o da regalare.</p>
-    </div>
-    <ol class="elenco-proposte">
-      {proposte.map((p) => (
-        <li>
-          <a href={`/sessioni/#${p.id}`}>
-            <span class="nome">{p.nome}</span>
-            <span class="quando">{p.quando}</span>
-            <span class="prezzo">{p.prezzo} €</span>
-          </a>
-        </li>
-      ))}
-    </ol>
-    <p><a class="bottone" href="/sessioni/">Vedi cosa c'è in ogni proposta</a></p>
-  </section>
+  <Porta />
 
   <section class="sezione wrap">
     <div class="passi">
@@ -100,27 +84,45 @@ import { proposte, voci, linkWhatsApp } from '../data/natale';
   </section>
 
   <section class="sezione wrap stretto pila chiusura">
-    <h2>Vi aspetto!!</h2>
+    <h2 class="parole">Vi aspetto!!</h2>
     <p>Scrivetemi su WhatsApp o chiamatemi al 333 6265276, e vi tengo un posto.</p>
     <p><a class="bottone" href={linkWhatsApp('Ciao Elisabetta, ho visto la pagina del Natale e vorrei prenotare')} rel="noopener">Scrivimi su WhatsApp</a></p>
   </section>
 </Base>
 
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  import { SplitText } from 'gsap/SplitText';
+  gsap.registerPlugin(ScrollTrigger, SplitText);
+
+  // Le parole arrivano una alla volta, come nei cartelli del reel (stile B).
+  const mm = gsap.matchMedia();
+  mm.add('(prefers-reduced-motion: no-preference)', () => {
+    document.querySelectorAll<HTMLElement>('.parole').forEach((el) => {
+      SplitText.create(el, {
+        type: 'words',
+        onSplit(self) {
+          return gsap.from(self.words, {
+            opacity: 0, y: 22, duration: 0.6, stagger: 0.16, ease: 'power2.out',
+            delay: el.hasAttribute('data-subito') ? 0.45 : 0,
+            scrollTrigger: el.hasAttribute('data-subito') ? undefined : { trigger: el, start: 'top 85%', once: true },
+          });
+        },
+      });
+    });
+  });
+</script>
+
 <style>
   .apertura{padding-block:clamp(28px,6vw,64px) clamp(18px,3vw,30px)}
   .titolo{font:italic 500 clamp(92px,21vw,236px)/.86 var(--display);letter-spacing:-.015em;margin-left:-.04em}
-  .sotto{font:500 clamp(34px,7vw,74px)/1 var(--display);color:var(--bordeaux);text-align:right;margin-top:clamp(4px,1vw,10px);animation-delay:.25s}
+  .sotto{font:500 clamp(34px,7vw,74px)/1 var(--display);color:var(--bordeaux);text-align:right;margin-top:clamp(4px,1vw,10px)}
   .fascia{background:var(--bosco);color:var(--crema);text-align:center;padding:20px 16px 18px;display:grid;gap:6px}
   .date{font:italic 500 clamp(28px,4.6vw,44px)/1.1 var(--display)}
   .dettagli{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
   .dettagli figure{margin:0;display:grid;gap:10px}
   .dettagli figcaption{font:italic 18px/1.35 var(--display);color:var(--tenue)}
-  .elenco-proposte{list-style:none;margin:0;padding:0;border-top:1px solid var(--bordeaux)}
-  .elenco-proposte a{display:grid;grid-template-columns:1.2fr 1.6fr auto;align-items:baseline;gap:6px 24px;padding-block:20px;border-bottom:1px solid var(--filetto);color:var(--testo);text-decoration:none}
-  .elenco-proposte a:hover .nome{font-style:italic}
-  .elenco-proposte .nome{font:500 clamp(28px,3.4vw,38px)/1.1 var(--display);color:var(--bordeaux)}
-  .elenco-proposte .quando{font-size:15px;color:var(--tenue)}
-  .elenco-proposte .prezzo{font:500 clamp(26px,3vw,34px)/1 var(--display);color:var(--testo);font-variant-numeric:lining-nums}
   .passi{display:grid;gap:26px}
   .passi ol{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:30px;counter-reset:p}
   .passi li{display:grid;gap:10px;align-content:start;padding-top:18px;border-top:1px solid var(--bordeaux)}
@@ -135,7 +137,5 @@ import { proposte, voci, linkWhatsApp } from '../data/natale';
     .dettagli,.voci,.passi ol{grid-template-columns:1fr}
     .dettagli{gap:30px}
     .due{grid-template-columns:1fr;gap:48px}
-    .elenco-proposte a{grid-template-columns:1fr auto}
-    .elenco-proposte .quando{grid-column:1 / -1;grid-row:2}
   }
 </style>
