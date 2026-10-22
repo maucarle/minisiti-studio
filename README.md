@@ -5,7 +5,7 @@ Una cartella per campagna, un progetto Cloudflare Pages e un sottodominio ciascu
 
 | cartella | indirizzo | progetto Pages |
 |---|---|---|
-| `natale/` | natale.elisabettacquaviva.it (CNAME da Edita) | `natale-acquaviva` → natale-acquaviva.pages.dev |
+| `natale/` | natale.elisabettacquaviva.it (CNAME messo da Edita il 22/10/2026, attivo) | `natale-acquaviva` → natale-acquaviva.pages.dev |
 
 ## Regole
 - **Il repo resta privato.** Pages pubblica solo `natale/dist`, ma appunti, liste e documenti di lavoro non entrano mai qui: vivono in `~/projects-registry/projects/minisiti-studio/artefatti/`.
