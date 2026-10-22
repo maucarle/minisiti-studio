@@ -1,0 +1,166 @@
+---
+import Base from '../layouts/Base.astro';
+import { proposte, dateMini, fileExtra, linkWhatsApp, contatti } from '../data/natale';
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: 'Set di Natale 2026',
+  provider: { '@type': 'LocalBusiness', name: 'Elisabetta Acquaviva Fotografa', telephone: `+39 ${contatti.telefono}`, address: { '@type': 'PostalAddress', streetAddress: 'Via di Mezzo 87', postalCode: '47923', addressLocality: 'Rimini', addressCountry: 'IT' } },
+  areaServed: 'Rimini',
+  offers: proposte.map((p) => ({ '@type': 'Offer', name: p.nome, price: p.prezzo, priceCurrency: 'EUR', description: p.sintesi })),
+};
+---
+<Base
+  title="Le proposte del Natale 2026 · Elisabetta Acquaviva"
+  description="Natale in Grande 350 €, Natale in Cornice 270 €, Mini Sessione 190 €: cosa c'è in ogni proposta del set di Natale 2026 e come prenotare."
+  pagina="sessioni"
+>
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+
+  <section class="sezione wrap pila" style="gap:14px;padding-bottom:36px">
+    <p class="occhiello">Le proposte</p>
+    <h1 class="h1">Tre modi di stare sul set</h1>
+    <p class="lead stretto">In tutti e tre c'è il set di Natale, una galleria privata da guardare con calma a casa e le stampe Fine Art 13x19 con i loro file. Cambia cosa portate a casa.</p>
+  </section>
+
+  <section class="wrap carte" aria-label="Le tre proposte">
+    {proposte.map((p) => (
+      <article id={p.id} class:list={['carta', { lunga: p.ritratto }]}>
+        <header class="pila" style="gap:6px">
+          <span class="occhiello">{p.settimana ? 'in settimana' : 'nei weekend di novembre'}</span>
+          <h2>{p.nome}</h2>
+          <p class="prezzo">{p.prezzo} €</p>
+        </header>
+        <p class="sintesi">{p.sintesi}</p>
+        <p class="tempo"><strong>{p.durata}</strong>, {p.quando}</p>
+        <ul>
+          {p.cosa.map((c) => <li>{c}</li>)}
+        </ul>
+        <a class:list={['bottone', { chiaro: !p.ritratto }]} href={linkWhatsApp(`Ciao Elisabetta, ho visto la pagina del Natale e vorrei prenotare ${p.conArticolo}`)} rel="noopener">Prenota {p.nome}</a>
+      </article>
+    ))}
+  </section>
+
+  <section class="wrap stretto note">
+    <p>{fileExtra} Il Natale in studio si può anche <a href="/regala/">regalare, con un buono</a>.</p>
+  </section>
+
+  <section class="sezione wrap componi" aria-labelledby="titolo-componi">
+    <div class="pila" style="gap:12px">
+      <p class="occhiello">Prenotare</p>
+      <h2 id="titolo-componi">Scrivetemi, il messaggio ve lo preparo io</h2>
+      <p>Scegliete la proposta e il giorno che vi va meglio: si apre WhatsApp con il messaggio già scritto, voi lo mandate e io vi rispondo con gli orari liberi.</p>
+    </div>
+
+    <form id="componi" class="modulo" novalidate>
+      <fieldset>
+        <legend>La proposta</legend>
+        <div class="scelte">
+          {proposte.map((p, i) => (
+            <label class="scelta"><input type="radio" name="proposta" value={p.id} data-nome={p.conArticolo} data-settimana={p.settimana ? '1' : '0'} checked={i === 2} /><span>{p.nome} <small>{p.prezzo} €</small></span></label>
+          ))}
+        </div>
+      </fieldset>
+
+      <fieldset id="campo-date">
+        <legend>Il giorno</legend>
+        <div class="scelte">
+          {dateMini.map((d, i) => (
+            <label class="scelta"><input type="radio" name="giorno" value={d.etichetta} checked={i === 0} /><span>{d.etichetta}</span></label>
+          ))}
+        </div>
+      </fieldset>
+
+      <fieldset id="campo-settimana" hidden>
+        <legend>In settimana, quando vi va meglio?</legend>
+        <input id="settimana" name="settimana" type="text" maxlength="80" placeholder="per esempio: martedì o giovedì pomeriggio" />
+      </fieldset>
+
+      <fieldset>
+        <legend>Mattina o pomeriggio?</legend>
+        <div class="scelte">
+          {['mattina', 'pomeriggio', 'è uguale'].map((f, i) => (
+            <label class="scelta"><input type="radio" name="fascia" value={f} checked={i === 2} /><span>{f}</span></label>
+          ))}
+        </div>
+      </fieldset>
+
+      <div class="anteprima">
+        <span class="occhiello">Il messaggio che parte</span>
+        <p id="testo-messaggio"></p>
+      </div>
+      <a id="invia" class="bottone" href={linkWhatsApp('Ciao Elisabetta, ho visto la pagina del Natale e vorrei prenotare')} rel="noopener">Apri WhatsApp</a>
+      <p class="piccolo">Preferite telefonare? {contatti.telefono}. Oppure scrivete a <a href={`mailto:${contatti.email}`}>{contatti.email}</a>.</p>
+    </form>
+  </section>
+</Base>
+
+<script>
+  const form = document.getElementById('componi') as HTMLFormElement;
+  const testo = document.getElementById('testo-messaggio')!;
+  const invia = document.getElementById('invia') as HTMLAnchorElement;
+  const campoDate = document.getElementById('campo-date')!;
+  const campoSettimana = document.getElementById('campo-settimana')!;
+  const numero = '393336265276';
+
+  function aggiorna() {
+    const p = form.querySelector<HTMLInputElement>('input[name="proposta"]:checked')!;
+    const settimana = p.dataset.settimana === '1';
+    campoDate.hidden = settimana;
+    campoSettimana.hidden = !settimana;
+    const fascia = (form.querySelector<HTMLInputElement>('input[name="fascia"]:checked')?.value) ?? 'è uguale';
+    let quando: string;
+    if (settimana) {
+      const pref = (form.querySelector<HTMLInputElement>('#settimana')!.value || '').trim();
+      quando = pref ? `in settimana, ${pref}` : 'in settimana, quando avete posto';
+    } else {
+      quando = form.querySelector<HTMLInputElement>('input[name="giorno"]:checked')!.value;
+    }
+    const orario = fascia === 'è uguale' ? 'a qualunque ora' : `di ${fascia}`;
+    const msg = `Ciao Elisabetta, ho visto la pagina del Natale e vorrei prenotare ${p.dataset.nome}: ${quando}, ${orario}.`;
+    testo.textContent = msg;
+    invia.href = `https://wa.me/${numero}?text=${encodeURIComponent(msg)}`;
+  }
+  form.addEventListener('input', aggiorna);
+  form.addEventListener('change', aggiorna);
+  form.addEventListener('submit', (e) => e.preventDefault());
+  if (location.hash) {
+    const scelta = form.querySelector<HTMLInputElement>(`input[name="proposta"][value="${location.hash.slice(1)}"]`);
+    if (scelta) scelta.checked = true;
+  }
+  aggiorna();
+</script>
+
+<style>
+  .h1{font:italic 500 clamp(52px,8vw,96px)/.95 var(--display)}
+  .carte{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;align-items:stretch}
+  .carta{display:flex;flex-direction:column;gap:18px;padding:28px 24px;background:#FBF7EE;border:1px solid var(--filetto);scroll-margin-top:70px}
+  .carta.lunga{border-color:var(--bordeaux)}
+  .carta h2{font-size:clamp(32px,3.4vw,40px)}
+  .prezzo{font:500 46px/1 var(--display);color:var(--testo);font-variant-numeric:lining-nums}
+  .sintesi{font:italic 21px/1.38 var(--display)}
+  .tempo{font-size:15px;color:var(--tenue);padding-block:10px;border-block:1px solid var(--filetto)}
+  .tempo strong{color:var(--testo);font-weight:600}
+  .carta ul{margin:0;padding-left:18px;display:grid;gap:8px;font-size:15.5px;flex:1}
+  .carta .bottone{align-self:stretch}
+  .note{padding-block:28px 0;text-align:center}
+  .note p{font-size:15px;color:var(--tenue)}
+  .componi{display:grid;grid-template-columns:1fr 1.25fr;gap:48px;align-items:start}
+  .modulo{display:grid;gap:22px;padding:28px;background:var(--carta);border:1px solid var(--filetto);min-width:0}
+  fieldset{border:0;margin:0;padding:0;display:grid;gap:10px;min-width:0}
+  fieldset[hidden]{display:none}
+  legend{font:600 11px/1.2 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--tenue);margin-bottom:10px}
+  .scelte{display:flex;flex-wrap:wrap;gap:8px}
+  .scelta{position:relative;cursor:pointer}
+  .scelta input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer}
+  .scelta span{display:inline-block;padding:10px 14px;background:var(--crema);border:1px solid var(--filetto);font-size:15px;line-height:1.2}
+  .scelta small{color:var(--tenue);font-size:13px;margin-left:4px}
+  .scelta input:checked + span{background:var(--bordeaux);border-color:var(--bordeaux);color:var(--crema)}
+  .scelta input:checked + span small{color:var(--oro-chiaro)}
+  .scelta input:focus-visible + span{outline:2px solid var(--bordeaux);outline-offset:2px}
+  #settimana{width:100%;font:16px/1.4 var(--sans);padding:12px;border:1px solid var(--filetto);background:var(--crema);color:var(--testo);border-radius:0}
+  .anteprima{display:grid;gap:8px;padding:16px;background:var(--crema);border:1px dashed var(--oro)}
+  #testo-messaggio{font:italic 20px/1.4 var(--display)}
+  @media (max-width:900px){.carte{grid-template-columns:1fr}.componi{grid-template-columns:1fr;gap:28px}.modulo{padding:20px}}
+</style>

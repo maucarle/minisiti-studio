@@ -1,0 +1,117 @@
+---
+import Base from '../layouts/Base.astro';
+import Foto from '../components/Foto.astro';
+import { proposte, linkWhatsApp } from '../data/natale';
+
+const lunghe = proposte.filter((p) => p.ritratto);
+---
+<Base
+  title="Il ritratto dentro il Natale · Elisabetta Acquaviva"
+  description="Natale in Cornice e Natale in Grande: il set di Natale e il ritratto della vostra famiglia, già in cornice, da appendere tutto l'anno o da regalare."
+  pagina="ritratto"
+  messaggio="Ciao Elisabetta, ho visto la pagina del Natale e vorrei prenotare una sessione con il ritratto"
+>
+  <section class="sezione wrap apri">
+    <div class="pila" style="gap:16px">
+      <p class="occhiello">Il ritratto</p>
+      <h1 class="h1">Natale sta arrivando, il vostro ritratto anche.</h1>
+      <p class="lead">Se avevate in mente un ritratto di famiglia, per voi o da regalare ai nonni, a Natale ce lo facciamo insieme!!</p>
+      <p>Nelle due sessioni più lunghe, in settimana, oltre al set di Natale c'è il ritratto della vostra famiglia in studio. Non solo la foto di Natale, quindi: anche quella da appendere in casa tutto l'anno, già in cornice.</p>
+    </div>
+    <Foto src="ritratto.jpg" alt="Un ritratto di famiglia in studio" etichetta="un ritratto di famiglia in studio" rapporto="4 / 5" />
+  </section>
+
+  <section class="sezione wrap prova" aria-labelledby="titolo-cornice">
+    <div class="pila" style="gap:14px">
+      <p class="occhiello">Le cornici</p>
+      <h2 id="titolo-cornice">Bianca o nera, e già in studio</h2>
+      <p>Le cornici sono già qui: appena scegliete la foto preferita la ritocchiamo, la mettiamo in cornice e passate a ritirarla.</p>
+      <div class="interruttori" role="group" aria-label="Prova la cornice">
+        <div class="gruppo">
+          <span class="occhiello" style="color:var(--tenue)">Cornice</span>
+          <button type="button" class="tasto" data-colore="bianca" aria-pressed="true">bianca</button>
+          <button type="button" class="tasto" data-colore="nera" aria-pressed="false">nera</button>
+        </div>
+        <div class="gruppo">
+          <span class="occhiello" style="color:var(--tenue)">Dentro</span>
+          <button type="button" class="tasto" data-formato="pp" aria-pressed="true">20x30 con passepartout</button>
+          <button type="button" class="tasto" data-formato="pieno" aria-pressed="false">30x40 senza</button>
+        </div>
+      </div>
+      <p class="piccolo" id="nota-formato">Natale in Cornice: una foto 20x30 con il passepartout bianco, in una cornice 30x40.</p>
+    </div>
+
+    <div class="parete" aria-hidden="true">
+      <div id="cornice" class="cornice bianca pp">
+        <div class="passepartout">
+          <div class="stampa"><Foto src="ritratto.jpg" alt="" etichetta="la vostra foto" rapporto="2 / 3" /></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sezione wrap stretto pila">
+    <p class="occhiello">Senza vetro, per scelta</p>
+    <h2>La carta si vede, e si tocca</h2>
+    <p>Le stampe sono Fine Art, su una carta che ha una sua materia. Sotto un vetro normale quella materia sparisce, e in mezzo tra voi e la foto arrivano i riflessi della finestra e delle lampade. Per questo le cornici dello studio sono tutte senza vetro: la foto la guardate, non la intravedete.</p>
+  </section>
+
+  <section class="sezione wrap confronto" aria-label="Le due sessioni con il ritratto">
+    {lunghe.map((p) => (
+      <article class="pila" style="gap:14px">
+        <h3>{p.nome} · {p.prezzo} €</h3>
+        <p class="sintesi">{p.sintesi}</p>
+        <p class="piccolo">{p.durata}, {p.quando}</p>
+        <ul>{p.cosa.map((c) => <li>{c}</li>)}</ul>
+        <a class="bottone" href={linkWhatsApp(`Ciao Elisabetta, ho visto la pagina del Natale e vorrei prenotare ${p.conArticolo}`)} rel="noopener">Prenota {p.nome}</a>
+      </article>
+    ))}
+  </section>
+</Base>
+
+<script>
+  const cornice = document.getElementById('cornice')!;
+  const nota = document.getElementById('nota-formato')!;
+  const testi: Record<string, string> = {
+    pp: 'Natale in Cornice: una foto 20x30 con il passepartout bianco, in una cornice 30x40.',
+    pieno: 'Natale in Grande: una foto 30x40 in cornice, senza passepartout, pronta da appendere.',
+  };
+  document.querySelectorAll<HTMLButtonElement>('.tasto').forEach((b) => {
+    b.addEventListener('click', () => {
+      const chiave = b.dataset.colore ? 'colore' : 'formato';
+      document.querySelectorAll<HTMLButtonElement>(`.tasto[data-${chiave}]`).forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+      if (b.dataset.colore) {
+        cornice.classList.toggle('bianca', b.dataset.colore === 'bianca');
+        cornice.classList.toggle('nera', b.dataset.colore === 'nera');
+      } else if (b.dataset.formato) {
+        cornice.classList.toggle('pp', b.dataset.formato === 'pp');
+        nota.textContent = testi[b.dataset.formato];
+      }
+    });
+  });
+</script>
+
+<style>
+  .h1{font:italic 500 clamp(46px,6.6vw,80px)/1 var(--display)}
+  .apri{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center}
+  .prova{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+  .interruttori{display:grid;gap:14px;margin-top:6px}
+  .gruppo{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+  .gruppo .occhiello{width:76px}
+  .tasto{font:500 14.5px/1.2 var(--sans);padding:10px 14px;background:var(--crema);color:var(--testo);border:1px solid var(--filetto);cursor:pointer}
+  .tasto[aria-pressed="true"]{background:var(--bordeaux);border-color:var(--bordeaux);color:var(--crema)}
+  .parete{background:linear-gradient(180deg,#E7DCC6,#DCCFB5);padding:clamp(28px,6vw,64px);display:flex;justify-content:center}
+  /* proporzioni reali: luce 30x40 con listello da 1,8 cm (6% della larghezza); passepartout di 5 cm per lato (16,67%: in CSS il padding in % si calcola sulla larghezza anche in verticale), quindi resta una 20x30 */
+  .cornice{width:min(100%,300px);aspect-ratio:30 / 40;padding:6%;box-shadow:0 18px 30px -18px rgba(40,25,15,.55),0 2px 4px rgba(40,25,15,.18);transition:background .35s ease}
+  .cornice.bianca{background:#F7F4EE}
+  .cornice.nera{background:#1D1B1A}
+  .passepartout{height:100%;display:flex;align-items:center;justify-content:center;background:transparent;transition:padding .35s ease}
+  .cornice.pp .passepartout{background:#FBFAF6;padding:16.67%}
+  .stampa{width:100%;height:100%;overflow:hidden;box-shadow:inset 0 0 0 1px rgba(0,0,0,.06)}
+  .stampa :global(.foto){height:100%;aspect-ratio:auto !important}
+  .stampa :global(.segnaposto span){font-size:15px}
+  .confronto{display:grid;grid-template-columns:1fr 1fr;gap:40px}
+  .confronto ul{margin:0;padding-left:18px;display:grid;gap:8px;font-size:15.5px}
+  .sintesi{font:italic 21px/1.38 var(--display)}
+  @media (max-width:860px){.apri,.prova,.confronto{grid-template-columns:1fr;gap:32px}}
+</style>

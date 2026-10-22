@@ -1,0 +1,69 @@
+---
+import Base from '../layouts/Base.astro';
+import Foto from '../components/Foto.astro';
+import { ideeRegalo, perChi, fileExtra } from '../data/natale';
+---
+<Base
+  title="Idee regalo con le vostre foto · Natale 2026"
+  description="Palla di Natale, calendari, cornici da tavolo, portfolio, album: le idee regalo stampate in studio con le foto del set di Natale."
+  pagina="idee"
+  messaggio="Ciao Elisabetta, ho visto le idee regalo del Natale e vorrei un'informazione"
+>
+  <section class="sezione wrap pila" style="gap:14px;padding-bottom:30px">
+    <p class="occhiello">Idee regalo</p>
+    <h1 class="h1">Le vostre foto, da regalare</h1>
+    <p class="lead stretto">Dopo la sessione, le foto del set possono diventare un regalo: per i nonni, per il primo Natale di chi è appena arrivato, per la casa. Le stampiamo e le prepariamo qui in studio.</p>
+    <p class="stretto">Si ordinano dalla vostra galleria privata o direttamente in studio. {fileExtra}</p>
+  </section>
+
+  <section class="wrap" aria-label="Scegli per chi">
+    <div class="filtri" role="group" aria-label="Per chi è il regalo">
+      {perChi.map((p, i) => (
+        <button type="button" class="filtro" data-per={p.id} aria-pressed={i === 0 ? 'true' : 'false'}>{p.nome}</button>
+      ))}
+    </div>
+  </section>
+
+  <section class="wrap griglia" id="griglia" aria-live="polite">
+    {ideeRegalo.map((r) => (
+      <article class="idea" data-per={r.per.join(' ')}>
+        <Foto src={r.foto} alt={r.nome} etichetta={r.nome} rapporto="1 / 1" />
+        <div class="testo">
+          <h2>{r.nome}</h2>
+          <p class="prezzo">{r.prezzo}</p>
+          <p class="cosa">{r.cosa}</p>
+        </div>
+      </article>
+    ))}
+  </section>
+
+  <section class="sezione wrap stretto pila" style="text-align:center;align-items:center">
+    <h2>Un dubbio su cosa scegliere?</h2>
+    <p>Scrivetemi per chi è il regalo, e lo pensiamo insieme.</p>
+  </section>
+</Base>
+
+<script>
+  const filtri = document.querySelectorAll<HTMLButtonElement>('.filtro');
+  const idee = document.querySelectorAll<HTMLElement>('.idea');
+  filtri.forEach((f) => f.addEventListener('click', () => {
+    filtri.forEach((x) => x.setAttribute('aria-pressed', String(x === f)));
+    const per = f.dataset.per!;
+    idee.forEach((i) => { i.hidden = per !== 'tutti' && !(i.dataset.per ?? '').split(' ').includes(per); });
+  }));
+</script>
+
+<style>
+  .h1{font:italic 500 clamp(50px,7vw,88px)/.98 var(--display)}
+  .filtri{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;scrollbar-width:none}
+  .filtri::-webkit-scrollbar{display:none}
+  .filtro{flex:none;font:500 14.5px/1.2 var(--sans);padding:11px 16px;background:var(--crema);color:var(--testo);border:1px solid var(--filetto);cursor:pointer;white-space:nowrap}
+  .filtro[aria-pressed="true"]{background:var(--bordeaux);border-color:var(--bordeaux);color:var(--crema)}
+  .griglia{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:34px 24px;padding-block:30px 20px}
+  .idea{display:grid;gap:14px;align-content:start}
+  .idea[hidden]{display:none}
+  .testo{display:grid;gap:4px}
+  .idea h2{font-size:26px;line-height:1.1}
+  .prezzo{font:500 22px/1.2 var(--display);color:var(--testo);font-variant-numeric:lining-nums}
+  .cosa{font-size:15px;color:var(--tenue)}
+</style>

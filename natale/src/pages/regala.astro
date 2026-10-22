@@ -1,0 +1,148 @@
+---
+import Base from '../layouts/Base.astro';
+import Foto from '../components/Foto.astro';
+import { cosaRegalare, voci, linkWhatsApp, contatti } from '../data/natale';
+---
+<Base
+  title="Regalare il Natale in studio · il buono nel vasetto"
+  description="Il buono regalo dello studio di Elisabetta Acquaviva: lo prepara lei a mano, nel suo vasetto della conserva, con la vostra dedica stampata dentro."
+  pagina="regala"
+  messaggio="Ciao Elisabetta, vorrei regalare un buono per il Natale in studio"
+>
+  <section class="sezione wrap apri">
+    <div class="pila" style="gap:16px">
+      <p class="occhiello">Da regalare</p>
+      <h1 class="h1">Un ricordo da conservare</h1>
+      <p class="lead">Il buono lo preparo io a mano, nel suo vasetto della conserva: state regalando un ricordo da conservare.</p>
+      <p>Niente card anonime da scaricare in trenta secondi. Dentro il vasetto ci sono il buono con la vostra dedica, il progetto che avete scelto e un codice che ne identifica il valore. Quando lo ritirate è pronto da regalare così com'è.</p>
+    </div>
+    <Foto src="vasetto.jpg" alt="Il vasetto di vetro con il buono regalo" etichetta="il vasetto, pronto da regalare" rapporto="4 / 5" />
+  </section>
+
+  <section class="sezione wrap componi" aria-labelledby="titolo-buono">
+    <div class="pila" style="gap:14px">
+      <p class="occhiello">La dedica</p>
+      <h2 id="titolo-buono">Scrivete la dedica, la stampo io nel buono</h2>
+      <p>Le parole sono vostre. Scrivetele qui e vedete come vengono: quando mandate il messaggio mi arrivano già pronte, io le stampo direttamente nel buono e poi confeziono il vasetto.</p>
+
+      <form id="buono-form" class="modulo" novalidate>
+        <div class="campo"><label for="per">Per chi è</label><input id="per" maxlength="40" placeholder="per esempio: nonna Rosa" /></div>
+        <div class="campo"><label for="da">Da parte di</label><input id="da" maxlength="40" placeholder="per esempio: Giulia e Marco" /></div>
+        <div class="campo"><label for="dedica">La vostra dedica</label><textarea id="dedica" maxlength="240" rows="4" placeholder="le vostre parole, come le direste a voce"></textarea><span class="piccolo" id="conta">0 / 240</span></div>
+        <fieldset>
+          <legend>Cosa regalate</legend>
+          <div class="scelte">
+            {cosaRegalare.map((c, i) => (
+              <label class="scelta"><input type="radio" name="cosa" value={c.nome} checked={i === 1} /><span>{c.nome}<small>{c.nota}</small></span></label>
+            ))}
+          </div>
+        </fieldset>
+        <div class="campo"><label for="entro">Per quando vi serve</label><input id="entro" maxlength="40" placeholder="per esempio: entro il 20 dicembre" /></div>
+      </form>
+    </div>
+
+    <div class="pila colonna-anteprima" style="gap:18px">
+      <div class="buono" aria-live="polite">
+        <span class="testa">Buono regalo · Natale 2026</span>
+        <span class="per" id="b-per">Per voi</span>
+        <p class="dedica" id="b-dedica">Qui compare la vostra dedica, con il carattere con cui la stampo.</p>
+        <span class="da" id="b-da"></span>
+        <span class="vale">vale per <strong id="b-cosa"></strong></span>
+        <span class="firma-buono">Elisabetta Acquaviva · fotografa · Rimini</span>
+      </div>
+      <a id="b-invia" class="bottone" href={linkWhatsApp('Ciao Elisabetta, vorrei regalare un buono per il Natale in studio')} rel="noopener">Mandami la dedica su WhatsApp</a>
+      <p class="piccolo">La versione stampata la preparo io: quella che vedete qui serve a darvi un'idea delle parole sulla carta.</p>
+    </div>
+  </section>
+
+  <section class="sezione wrap">
+    <div class="passi">
+      <p class="occhiello">Come funziona</p>
+      <ol>
+        <li><h3>Scrivetemi</h3><p>Raccontatemi a chi pensate e cosa volete regalare, e mandatemi le frasi della dedica.</p></li>
+        <li><h3>Lo preparo io</h3><p>Stampo la dedica nel buono e confeziono il vasetto a mano. Se avete un'occasione vicina scrivetemi con qualche giorno di anticipo: voglio che arrivi fatto bene e in tempo.</p></li>
+        <li><h3>Passate a ritirarlo</h3><p>In studio, a Rimini, anche se lo ritira qualcun altro per voi: si salda al ritiro, oppure con un bonifico prima.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="sezione wrap voci" aria-label="Detto da chi l'ha ricevuto">
+    <p class="occhiello">Detto da chi l'ha ricevuto</p>
+    {voci.regalo.map((v) => (
+      <blockquote>
+        <p class="citazione">"{v.testo}"</p>
+        <p class="chi">{v.chi}, {v.quando}</p>
+      </blockquote>
+    ))}
+  </section>
+</Base>
+
+<script>
+  const numero = '393336265276';
+  const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
+  const per = $<HTMLInputElement>('per'), da = $<HTMLInputElement>('da'), dedica = $<HTMLTextAreaElement>('dedica'), entro = $<HTMLInputElement>('entro');
+  const form = $<HTMLFormElement>('buono-form');
+  const bPer = $('b-per'), bDedica = $('b-dedica'), bDa = $('b-da'), bCosa = $('b-cosa'), conta = $('conta');
+  const invia = $<HTMLAnchorElement>('b-invia');
+  const vuota = 'Qui compare la vostra dedica, con il carattere con cui la stampo.';
+
+  function aggiorna() {
+    const cosa = form.querySelector<HTMLInputElement>('input[name="cosa"]:checked')!.value;
+    const p = per.value.trim(), d = da.value.trim(), t = dedica.value.trim(), e = entro.value.trim();
+    bPer.textContent = p ? `Per ${p}` : 'Per voi';
+    bDedica.textContent = t || vuota;
+    bDedica.classList.toggle('vuota', !t);
+    bDa.textContent = d ? `da ${d}` : '';
+    bCosa.textContent = cosa;
+    conta.textContent = `${dedica.value.length} / 240`;
+    const righe = [
+      `Ciao Elisabetta, vorrei regalare un buono: ${cosa}${p ? `, per ${p}` : ''}.`,
+      t ? `La dedica da stampare nel buono:\n"${t}"${d ? `\n(da ${d})` : ''}` : 'La dedica te la mando appena la scrivo.',
+      e ? `Mi serve ${e}.` : '',
+    ].filter(Boolean);
+    invia.href = `https://wa.me/${numero}?text=${encodeURIComponent(righe.join('\n\n'))}`;
+  }
+  form.addEventListener('input', aggiorna);
+  form.addEventListener('change', aggiorna);
+  form.addEventListener('submit', (ev) => ev.preventDefault());
+  aggiorna();
+</script>
+
+<style>
+  .h1{font:italic 500 clamp(50px,7vw,88px)/.98 var(--display)}
+  .apri{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center}
+  .componi{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:start}
+  .modulo{display:grid;gap:18px;padding:26px;background:var(--carta);border:1px solid var(--filetto);margin-top:8px;min-width:0}
+  .campo{display:grid;gap:6px}
+  .campo label,legend{font:600 11px/1.2 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--tenue)}
+  legend{margin-bottom:10px}
+  fieldset{border:0;margin:0;padding:0;min-width:0}
+  input,textarea{width:100%;font:16px/1.45 var(--sans);padding:12px;border:1px solid var(--filetto);background:var(--crema);color:var(--testo);border-radius:0}
+  textarea{resize:vertical;font:italic 20px/1.4 var(--display)}
+  .scelte{display:grid;gap:8px}
+  .scelta{position:relative;cursor:pointer}
+  .scelta input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer;width:100%}
+  .scelta span{display:flex;flex-direction:column;gap:2px;padding:10px 14px;background:var(--crema);border:1px solid var(--filetto);font-size:15px;line-height:1.3}
+  .scelta small{color:var(--tenue);font-size:13px}
+  .scelta input:checked + span{background:var(--bordeaux);border-color:var(--bordeaux);color:var(--crema)}
+  .scelta input:checked + span small{color:var(--oro-chiaro)}
+  .scelta input:focus-visible + span{outline:2px solid var(--bordeaux);outline-offset:2px}
+  .colonna-anteprima{position:sticky;top:70px}
+  .buono{background:#FCF9F2;border:1px solid var(--filetto);padding:34px 28px 28px;display:grid;gap:14px;text-align:center;box-shadow:0 1px 0 var(--filetto),0 22px 40px -28px rgba(60,30,20,.55);transform:rotate(-.6deg)}
+  .testa{font:600 10.5px/1 var(--sans);letter-spacing:.26em;text-transform:uppercase;color:var(--bordeaux);border-block:1px solid var(--bordeaux);padding-block:9px}
+  .per{font:italic 500 38px/1.1 var(--display);color:var(--bordeaux);overflow-wrap:anywhere}
+  .dedica{font:400 23px/1.4 var(--display);white-space:pre-wrap;overflow-wrap:anywhere;min-height:96px}
+  .dedica.vuota{color:var(--tenue);font-style:italic;font-size:19px}
+  .da{font:italic 20px/1.2 var(--display);color:var(--testo);min-height:1.2em}
+  .vale{font-size:14px;color:var(--tenue)}
+  .vale strong{color:var(--testo);font-weight:600}
+  .firma-buono{font:500 10px/1 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--tenue);padding-top:12px;border-top:1px solid var(--filetto)}
+  .passi{display:grid;gap:26px}
+  .passi ol{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:30px;counter-reset:p}
+  .passi li{display:grid;gap:10px;align-content:start;padding-top:18px;border-top:1px solid var(--bordeaux)}
+  .passi li::before{counter-increment:p;content:counter(p);font:italic 500 40px/1 var(--display);color:var(--oro)}
+  .voci{display:grid;grid-template-columns:1fr 1fr;gap:28px 40px}
+  .voci > .occhiello{grid-column:1 / -1}
+  .voci blockquote{margin:0}
+  @media (max-width:860px){.apri,.componi,.voci,.passi ol{grid-template-columns:1fr}.colonna-anteprima{position:static}.modulo{padding:18px}}
+</style>

@@ -1,0 +1,25 @@
+---
+// Foto con segnaposto: se il file non c'è ancora in public/foto/, mostra un riquadro con la didascalia.
+// Per far comparire la foto basta copiare il file col nome giusto in public/foto/ e fare push.
+import fs from 'node:fs';
+import path from 'node:path';
+
+interface Props { src: string; alt: string; rapporto?: string; etichetta?: string; classe?: string; caricamento?: 'lazy' | 'eager' }
+const { src, alt, rapporto = '3 / 2', etichetta, classe = '', caricamento = 'lazy' } = Astro.props;
+const disco = path.join(process.cwd(), 'public', 'foto', src);
+const esiste = fs.existsSync(disco);
+---
+{esiste ? (
+  <img class={`foto ${classe}`} src={`/foto/${src}`} alt={alt} loading={caricamento} decoding="async" style={`aspect-ratio:${rapporto}`} draggable="false" oncontextmenu="return false" />
+) : (
+  <div class={`foto segnaposto ${classe}`} style={`aspect-ratio:${rapporto}`} role="img" aria-label={alt} data-file={`public/foto/${src}`}>
+    <span>{etichetta ?? alt}</span>
+  </div>
+)}
+<style>
+  .foto{width:100%;max-width:100%;object-fit:cover;background:var(--carta)}
+  .segnaposto{display:flex;align-items:flex-end;justify-content:flex-start;padding:18px;background:
+    linear-gradient(135deg, rgba(110,25,31,.05) 25%, transparent 25%, transparent 50%, rgba(110,25,31,.05) 50%, rgba(110,25,31,.05) 75%, transparent 75%) 0 0/14px 14px,
+    var(--carta);border:1px solid var(--filetto)}
+  .segnaposto span{font:italic 500 19px/1.25 var(--display);color:var(--tenue);background:var(--crema);padding:6px 12px;border:1px solid var(--filetto)}
+</style>
