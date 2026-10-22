@@ -29,10 +29,10 @@ const stileVano = `--rapporto:${rapporto};` + (foto ? `--porta:url(${foto});--di
 const interno = fs.existsSync(path.join(process.cwd(), 'public', 'foto', 'set', 'set-01.jpg')) ? '/foto/set/set-01.jpg' : '/foto/riferimento/set.jpg';
 ---
 <section class="porta" data-porta aria-labelledby="titolo-porta">
-  <div class="davanti" aria-hidden="true">
-    <p class="occhiello">Le proposte</p>
-    <p class="invito">Aprite la porta</p>
-    <div class:list={['vano', { foto }]} style={stileVano}>
+  <div class="davanti">
+    <p class="occhiello" aria-hidden="true">Le proposte</p>
+    <p class="invito" aria-hidden="true">Aprite la porta</p>
+    <div class:list={['vano', { foto }]} style={stileVano} aria-hidden="true">
       <div class="alone"></div>
       <div class="interno"><img src={interno} alt="" decoding="async" /><div class="luce"></div></div>
       {foto ? (
@@ -47,7 +47,8 @@ const interno = fs.existsSync(path.join(process.cwd(), 'public', 'foto', 'set', 
         </>
       )}
     </div>
-    <p class="scorri">scorrete</p>
+    <p class="scorri" aria-hidden="true">scorrete</p>
+    <button type="button" class="apri">Aprite la porta</button>
   </div>
 
   <div class="dietro">
@@ -73,13 +74,17 @@ const interno = fs.existsSync(path.join(process.cwd(), 'public', 'foto', 'set', 
 <script>
   import { gsap } from 'gsap';
   import { ScrollTrigger } from 'gsap/ScrollTrigger';
-  gsap.registerPlugin(ScrollTrigger);
+  import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
+  gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
   const sezione = document.querySelector<HTMLElement>('[data-porta]');
   if (sezione) {
     const mm = gsap.matchMedia();
-    mm.add('(prefers-reduced-motion: no-preference)', () => {
+    mm.add({ movimento: '(prefers-reduced-motion: no-preference)', mouse: '(hover: hover) and (pointer: fine)' }, (ctx) => {
+      const { movimento, mouse } = ctx.conditions as { movimento: boolean; mouse: boolean };
+      if (!movimento) return;
       sezione.classList.add('animata');
+      sezione.classList.toggle('col-mouse', mouse);
       const vano = sezione.querySelector<HTMLElement>('.vano')!;
       const dietro = sezione.querySelector<HTMLElement>('.dietro')!;
       // il ritaglio iniziale del pannello coincide con il vano della porta (ricalcolato a ogni ridimensionamento)
@@ -89,18 +94,40 @@ const interno = fs.existsSync(path.join(process.cwd(), 'public', 'foto', 'set', 
       };
       const tl = gsap.timeline({
         defaults: { ease: 'none' },
-        scrollTrigger: { trigger: sezione, start: 'top top', end: '+=190%', pin: true, scrub: 0.6, invalidateOnRefresh: true },
+        // col mouse la corsa è più corta: con la rotella 190% sono una ventina di scatti
+        scrollTrigger: { trigger: sezione, start: 'top top', end: mouse ? '+=120%' : '+=190%', pin: true, scrub: 0.6, invalidateOnRefresh: true },
       });
-      tl.to('.porta .scorri, .porta .invito', { opacity: 0, duration: 0.12 }, 0)
+      tl.to('.porta .scorri, .porta .invito, .porta .apri', { opacity: 0, duration: 0.12 }, 0)
         .to('.porta .battente.sinistro', { rotateY: -100, duration: 0.5, ease: 'power1.inOut' }, 0.1)
         .to('.porta .battente.destro', { rotateY: 100, duration: 0.5, ease: 'power1.inOut' }, 0.1)
         .fromTo('.porta .interno img', { scale: 1.15 }, { scale: 1, duration: 0.6 }, 0.1)
         .fromTo('.porta .luce', { opacity: 0.9 }, { opacity: 0.35, duration: 0.45 }, 0.15)
         .fromTo('.porta .alone', { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.45 }, 0.15)
         .fromTo(dietro, { clipPath: ritaglio, opacity: 0 }, { clipPath: 'inset(0px 0px 0px 0px)', opacity: 1, duration: 0.4, ease: 'power2.inOut' }, 0.5)
+        .set(dietro, { pointerEvents: 'auto' }, 0.72)
         .from('.porta .dietro .contenuto > *', { opacity: 0, y: 26, stagger: 0.04, duration: 0.2 }, 0.72)
         .to({}, { duration: 0.12 });
-      return () => sezione.classList.remove('animata');
+
+      // Sul computer la porta si apre anche col clic: scorre da sola fino alle proposte.
+      // Passandoci sopra si socchiude, per far capire che è una porta da aprire.
+      const apri = () => gsap.to(window, { scrollTo: tl.scrollTrigger!.end, duration: 1.8, ease: 'power1.inOut' });
+      const battenti = sezione.querySelectorAll('.battente');
+      const socchiudi = (si: boolean) => {
+        if (tl.progress() > 0.01) return;
+        gsap.to(battenti, { rotateY: (i) => (si ? (i === 0 ? -14 : 14) : 0), duration: 0.5, ease: 'power2.out', overwrite: 'auto' });
+      };
+      const tastoApri = sezione.querySelector<HTMLButtonElement>('.apri')!;
+      if (mouse) {
+        vano.addEventListener('click', apri);
+        vano.addEventListener('mouseenter', () => socchiudi(true));
+        vano.addEventListener('mouseleave', () => socchiudi(false));
+      }
+      tastoApri.addEventListener('click', apri);
+      return () => {
+        sezione.classList.remove('animata', 'col-mouse');
+        vano.removeEventListener('click', apri);
+        tastoApri.removeEventListener('click', apri);
+      };
     });
   }
 </script>
@@ -124,10 +151,16 @@ const interno = fs.existsSync(path.join(process.cwd(), 'public', 'foto', 'set', 
   /* Con l'animazione: la scena a tutto schermo, la porta davanti e il pannello dietro. */
   .porta.animata{height:100vh;height:100svh;overflow:hidden}
   .porta.animata .davanti{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px var(--gutter-d) 24px var(--gutter)}
-  .porta.animata .dietro{position:absolute;inset:0;display:flex;align-items:center;opacity:0;will-change:clip-path}
+  /* il pannello sta sopra la porta, invisibile: finché la porta non è aperta i clic devono passargli attraverso */
+  .porta.animata .dietro{position:absolute;inset:0;display:flex;align-items:center;opacity:0;will-change:clip-path;pointer-events:none}
   .porta.animata .contenuto{width:100%;padding-block:24px}
   .invito{font:italic 500 clamp(34px,6vw,58px)/1 var(--display);color:var(--bordeaux)}
   .scorri{font:600 10.5px/1 var(--sans);letter-spacing:.3em;text-transform:uppercase;color:var(--tenue)}
+  .apri{display:none}
+  .porta.animata.col-mouse .scorri{display:none}
+  .porta.animata.col-mouse .apri{display:inline-flex;align-items:center;gap:10px;min-height:44px;padding:12px 22px;background:transparent;color:var(--bordeaux);border:1px solid var(--bordeaux);font:600 11.5px/1 var(--sans);letter-spacing:.2em;text-transform:uppercase;cursor:pointer;transition:background .2s ease,color .2s ease}
+  .porta.animata.col-mouse .apri:hover{background:var(--bordeaux);color:var(--crema)}
+  .porta.animata.col-mouse .vano{cursor:pointer}
   .scorri::after{content:"";display:block;width:1px;height:28px;margin:10px auto 0;background:var(--tenue);animation:respiro 2.2s ease-in-out infinite}
   @keyframes respiro{0%,100%{transform:scaleY(.4);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}}
 
