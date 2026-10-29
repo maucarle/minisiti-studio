@@ -26,7 +26,11 @@ const foto = misure ? '/foto/set/porta.jpg' : null;
 const rapporto = misure ? (MODO_PORTA === 'doppia' ? 2 : 1) * misure.w / misure.h : 0.5;
 const stileVano = `--rapporto:${rapporto};` + (foto ? `--porta:url(${foto});--dimensione:${MODO_PORTA === 'doppia' ? '100% 100%' : '200% 100%'};` : '');
 // Dentro la porta: l'interno della baita (la finestra col camino) dalla foto del set; la foto vera quando c'è.
-const interno = fs.existsSync(path.join(process.cwd(), 'public', 'foto', 'set', 'set-01.jpg')) ? '/foto/set/set-01.jpg' : '/foto/riferimento/set.jpg';
+const setVero = fs.existsSync(path.join(process.cwd(), 'public', 'foto', 'set', 'set-01.jpg'));
+const interno = setVero ? '/foto/set/set-01.jpg' : '/foto/riferimento/set.jpg';
+// dove cade la finestra nell'una e nell'altra foto; nella foto vera si stringe sulla finestra
+// (alta 175% e alzata del 12%) perché in basso c'è il cavallo, che dentro la porta ruberebbe la scena
+const fuocoInterno = setVero ? 'object-position:26% 50%;height:175%;position:relative;top:-12%' : 'object-position:29% 42%';
 ---
 <section class="porta" data-porta aria-labelledby="titolo-porta">
   <div class="davanti">
@@ -34,7 +38,7 @@ const interno = fs.existsSync(path.join(process.cwd(), 'public', 'foto', 'set', 
     <p class="invito" aria-hidden="true">Aprite la porta</p>
     <div class:list={['vano', { foto }]} style={stileVano} aria-hidden="true">
       <div class="alone"></div>
-      <div class="interno"><img src={interno} alt="" decoding="async" /><div class="luce"></div></div>
+      <div class="interno"><img src={interno} alt="" decoding="async" style={fuocoInterno} /><div class="luce"></div></div>
       {foto ? (
         <>
           <div class="battente sinistro"><span class="faccia"></span></div>
