@@ -41,8 +41,8 @@ import { voci, linkWhatsApp } from '../data/natale';
       <figcaption>La scala con le coperte a quadri e la legna pronta per il fuoco.</figcaption>
     </figure>
     <figure>
-      <Foto src="set/set-04.jpg" alt="La panca con i plaid scozzesi e le lanterne" etichetta="la panca e i plaid" rapporto="4 / 5" />
-      <figcaption>La panca con i plaid scozzesi, e le lucine accese.</figcaption>
+      <Foto src="set/set-04.jpg" alt="La finestra con la tenda e l'albero con le arance secche" etichetta="la finestra e l'albero" rapporto="4 / 5" />
+      <figcaption>La finestra con la tenda, e l'albero con le arance secche.</figcaption>
     </figure>
   </section>
 
@@ -70,13 +70,13 @@ import { voci, linkWhatsApp } from '../data/natale';
 
   <section class="sezione wrap due">
     <a class="scheda" href="/regala/">
-      <Foto src="vasetto.jpg" alt="Il buono regalo nel suo vasetto di vetro" etichetta="il buono nel vasetto" rapporto="4 / 3" />
+      <Foto src="vasetto.jpg" alt="Il buono regalo nel suo vasetto di vetro" etichetta="il buono nel vasetto" rapporto="4 / 3" classe="vasetto-basso" />
       <span class="occhiello">Da regalare</span>
       <h3>Il buono nel vasetto della conserva</h3>
       <p>Il Natale in studio si può anche regalare: preparo io il buono, a mano, con la vostra dedica stampata dentro.</p>
     </a>
     <a class="scheda" href="/idee-regalo/">
-      <Foto src="regali/insieme.jpg" alt="Calendari, palla di Natale e cornici dello studio" etichetta="le idee regalo" rapporto="4 / 3" />
+      <Foto src="regali/insieme.jpg" alt="Il calendario da tavolo con il piedistallo in ceramica fatto a mano" etichetta="le idee regalo" rapporto="4 / 3" />
       <span class="occhiello">Dopo la sessione</span>
       <h3>Le idee regalo, con le vostre foto</h3>
       <p>La palla di Natale, i calendari, le cornici da tavolo, l'album: per i nonni, per il primo Natale, per la casa.</p>
@@ -115,6 +115,8 @@ import { voci, linkWhatsApp } from '../data/natale';
 </script>
 
 <style>
+  /* il vasetto sta nella metà bassa della foto: nel riquadro 4:3 si tiene in basso */
+  :global(.vasetto-basso){object-position:50% 78%}
   .apertura{padding-block:clamp(28px,6vw,64px) clamp(18px,3vw,30px)}
   .titolo{font:italic 500 clamp(92px,21vw,236px)/.86 var(--display);letter-spacing:-.015em;margin-left:-.04em}
   .sotto{font:500 clamp(34px,7vw,74px)/1 var(--display);color:var(--bordeaux);text-align:right;margin-top:clamp(4px,1vw,10px)}

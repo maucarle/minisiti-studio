@@ -134,7 +134,8 @@ export const cosaRegalare = [
   { id: 'progetto', nome: 'un altro progetto dello studio', nota: 'pancione, neonato, famiglia: ne parliamo insieme' },
 ];
 
-// Idee regalo: catalogo del Natale 2025. PREZZI DA CONFERMARE con Elisabetta prima dell'apertura (PUNTI-APERTI, punto 4).
+// Idee regalo: catalogo «Idee Regalo» del Natale 2025 (PDF di Eli), con prezzi e misure di quel catalogo.
+// PREZZI DA CONFERMARE per il 2026 e scelta di cosa tenere: decide Mauro con Eli prima dell'apertura (PUNTI-APERTI, punto 4).
 export type Idea = {
   nome: string;
   prezzo: string;
@@ -147,11 +148,16 @@ export const ideeRegalo: Idea[] = [
   { nome: 'Palla di Natale con foto', prezzo: '18 €', cosa: 'due immagini fronte e retro, 10 cm, nastro di velluto rosso. Quella del 2026, da appendere ogni anno accanto alle altre.', per: ['primo', 'pensiero', 'nonni'], foto: 'regali/palla.jpg' },
   { nome: 'Biglietto di Natale a due ante', prezzo: '5 € l\'uno, almeno 4', cosa: 'carta naturale rigata, con la vostra foto del set.', per: ['pensiero'], foto: 'regali/biglietto.jpg' },
   { nome: 'Portachiavi', prezzo: '29 €', cosa: 'ecopelle, due immagini, a cuore, tondo o rettangolare.', per: ['pensiero'], foto: 'regali/portachiavi.jpg' },
+  { nome: 'Calendario annuale con una foto', prezzo: '29 €', cosa: '30x45, carta fine art opaca, tutto l\'anno su un solo foglio.', per: ['casa', 'nonni', 'pensiero'], foto: 'regali/calendario-annuale-1.jpg' },
+  { nome: 'Calendario annuale con tre foto', prezzo: '36 €', cosa: '30x45, carta fine art opaca, tre immagini e tutto l\'anno su un foglio.', per: ['casa', 'nonni'], foto: 'regali/calendario-annuale-3.jpg' },
   { nome: 'Puzzle', prezzo: '39 €', cosa: '30x45, 252 pezzi, con la stampa di riferimento e la custodia.', per: ['pensiero', 'nonni'], foto: 'regali/puzzle.jpg' },
   { nome: 'Cornice da tavolo in acrilico', prezzo: '39 €', cosa: '16x24, stampa montata su plexiglass, piedistallo in ceramica fatto a mano.', per: ['nonni', 'casa'], foto: 'regali/acrilico.jpg' },
   { nome: 'Foto Desk', prezzo: '39 €', cosa: 'una stampa su passepartout, con il piedistallo in ceramica fatto a mano.', per: ['nonni', 'casa'], foto: 'regali/foto-desk.jpg' },
+  { nome: 'Foto su tela', prezzo: 'da 40 €', cosa: 'stampata in studio sulla tela e montata sul telaio.', per: ['casa'], foto: 'regali/tela.jpg' },
+  { nome: 'Pannello', prezzo: 'da 40 €', cosa: 'leggero e moderno, spessore 10 o 20 mm, bordo nero o bianco.', per: ['casa'], foto: 'regali/pannello.jpg' },
   { nome: 'Memory Box', prezzo: '49 €', cosa: 'stile Polaroid, cinque slitte e cinque foto comprese.', per: ['primo', 'pensiero'], foto: 'regali/memory-box.jpg' },
   { nome: 'Calendario da tavolo "cards"', prezzo: '49 €', cosa: '12x17, dodici foto quadrate, piedistallo in ceramica.', per: ['nonni', 'casa'], foto: 'regali/calendario-tavolo.jpg' },
+  { nome: 'Cornice in legno con passepartout', prezzo: 'da 50 €', cosa: 'in legno bianco, nero o naturale, con il passepartout. La stampa si aggiunge a parte.', per: ['casa', 'nonni'], foto: 'regali/cornice.jpg' },
   { nome: 'Portfolio Fine Art', prezzo: '54 €', cosa: 'due o tre immagini su passepartout, a due o tre ante.', per: ['nonni', 'casa'], foto: 'regali/portfolio.jpg' },
   { nome: 'Calendario quadrimestrale', prezzo: '54 €', cosa: '30x40 o 30x45, tre immagini, rilegato con la gruccia in metallo.', per: ['casa'], foto: 'regali/calendario-quadrimestrale.jpg' },
   { nome: 'Portafoto con 10 cornicette', prezzo: '69 €', cosa: '13x18, dieci fotografie comprese.', per: ['nonni', 'primo'], foto: 'regali/portafoto.jpg' },
