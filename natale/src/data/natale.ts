@@ -4,7 +4,7 @@
 // pieghevole e pagina "la-magia-del-natale".
 
 /** false = sito in prova: noindex e robots chiusi. Si mette a true all'apertura, dopo il sì di Elisabetta. */
-export const APERTO = false;
+export const APERTO = true;
 
 /**
  * Battenti della porta che si apre in home. Se esiste public/foto/set/porta.jpg (la porta vera, frontale,
