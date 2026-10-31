@@ -26,7 +26,7 @@ npm run verifica # controlla dist/: link, prezzi, parole vietate, WhatsApp, noin
 - **Apertura al pubblico**: `APERTO = true` in `natale/src/data/natale.ts` (toglie il noindex e apre robots.txt). Prima: CNAME attivo, sì di Elisabetta, prezzi delle idee regalo confermati.
 - **Foto**: si copiano in `natale/public/foto/` col nome giusto e compaiono da sole al posto del segnaposto. `npm run verifica` stampa l'elenco di quelle che mancano:
   - `set/set-01.jpg` (apertura, orizzontale 16:9), `set/set-02.jpg` la porta, `set/set-03.jpg` scala con le coperte e legna, `set/set-04.jpg` finestra e albero (verticali 4:5, ritagliate dalle prove del set in Studio2026/04 NATALE/PROVE)
-  - `ritratto.jpg` (verticale 4:5, un ritratto di famiglia in studio, con liberatoria per il web)
+  - `ritratto.jpg` (un ritratto di famiglia in studio, con liberatoria per il web; dal 1/11/2026 è orizzontale 3:2 e la pagina, cornice di prova compresa, è impaginata per l'orizzontale)
   - `vasetto.jpg` (verticale 4:5)
   - `set/porta.jpg`: la porta vera del set, frontale e dritta, ritagliata sul solo battente, con niente davanti (lanterne, oggetti). Se c'è, i battenti della porta che si apre in home diventano fotografici; il modo (`meta` o `doppia`) si sceglie con `MODO_PORTA` in `natale/src/data/natale.ts`. Lato lungo almeno 1600 px.
   - `regali/insieme.jpg` (4:3) e una quadrata per ogni idea regalo (`regali/palla.jpg`, `regali/album.jpg`… i nomi sono in `natale.ts`)
