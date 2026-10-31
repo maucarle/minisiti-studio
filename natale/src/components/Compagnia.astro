@@ -1,0 +1,81 @@
+---
+// La Compagnia del Natale: gli animali del set uno dopo l'altro, in fila, come una compagnia in cammino.
+// Una riga che scorre di lato (col dito, o con le frecce sul computer) e che parte allineata alla colonna ed esce dal bordo destro.
+// Entrando, le schede arrivano una alla volta. Senza JavaScript o col movimento ridotto la fila è ferma e completa.
+import Foto from './Foto.astro';
+import { compagnia } from '../data/natale';
+---
+<section class="compagnia sezione" aria-labelledby="titolo-compagnia" data-compagnia>
+  <div class="wrap testa">
+    <div class="pila">
+      <p class="occhiello">Sul set, quest'anno</p>
+      <h2 id="titolo-compagnia">{compagnia.titolo}</h2>
+      <p class="lead">{compagnia.sotto}</p>
+    </div>
+    <div class="frecce" aria-hidden="true">
+      <button type="button" class="freccia" data-verso="-1" tabindex="-1">‹</button>
+      <button type="button" class="freccia" data-verso="1" tabindex="-1">›</button>
+    </div>
+  </div>
+  <ol class="fila" tabindex="0" aria-label="Gli animali della compagnia">
+    {compagnia.animali.map((a) => (
+      <li class="animale">
+        <Foto src={a.foto} alt={`${a.nomi}, ${a.chi} del set di Natale`} etichetta={`${a.nomi} arriva a giorni`} rapporto="4 / 5" />
+        <p class="nome">{a.nomi}</p>
+        <p class="chi">{a.chi}</p>
+      </li>
+    ))}
+  </ol>
+</section>
+
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  gsap.registerPlugin(ScrollTrigger);
+
+  document.querySelectorAll<HTMLElement>('[data-compagnia]').forEach((el) => {
+    const fila = el.querySelector<HTMLElement>('.fila')!;
+    // le frecce puntano all'inizio esatto della scheda dopo (o prima) di dove si è adesso:
+    // verso un punto a metà, l'aggancio delle schede riporterebbe indietro
+    const schede = [...el.querySelectorAll<HTMLElement>('.animale')];
+    el.querySelectorAll<HTMLButtonElement>('.freccia').forEach((b) => {
+      b.addEventListener('click', () => {
+        const avanti = b.dataset.verso === '1';
+        const punti = schede.map((s) => s.offsetLeft - schede[0].offsetLeft);
+        const qui = fila.scrollLeft, max = fila.scrollWidth - fila.clientWidth;
+        const dove = avanti ? punti.find((p) => p > qui + 4) ?? max : [...punti].reverse().find((p) => p < qui - 4) ?? 0;
+        fila.scrollTo({ left: Math.min(dove, max), behavior: 'smooth' });
+      });
+    });
+
+    gsap.matchMedia().add('(prefers-reduced-motion: no-preference)', () => {
+      gsap.from(el.querySelectorAll('.animale'), {
+        opacity: 0, x: 70, duration: 0.8, stagger: 0.12, ease: 'power2.out',
+        scrollTrigger: { trigger: fila, start: 'top 85%', once: true },
+      });
+    });
+  });
+</script>
+
+<style>
+  .testa{display:flex;align-items:flex-end;justify-content:space-between;gap:24px}
+  .testa .pila{max-width:640px}
+  .frecce{display:flex;gap:10px;flex:none}
+  .freccia{width:46px;height:46px;border-radius:50%;border:1px solid var(--bordeaux);background:transparent;color:var(--bordeaux);font:400 26px/1 var(--display);cursor:pointer}
+  .freccia:hover{background:var(--bordeaux);color:var(--crema)}
+  /* la fila parte dal bordo sinistro della colonna ed esce da destra */
+  .fila{--inizio:max(var(--gutter), calc((100vw - var(--colonna)) / 2 + var(--gutter)));
+    list-style:none;margin:clamp(26px,4vw,40px) 0 0;padding:0 var(--gutter-d) 14px var(--inizio);
+    display:grid;grid-auto-flow:column;grid-auto-columns:clamp(220px,24vw,270px);gap:22px;
+    overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-left:var(--inizio);overscroll-behavior-x:contain;
+    scrollbar-width:thin;scrollbar-color:var(--filetto) transparent}
+  .fila:focus-visible{outline:2px solid var(--oro);outline-offset:4px}
+  .animale{scroll-snap-align:start;display:grid;gap:4px;align-content:start}
+  .animale :global(.foto){margin-bottom:8px}
+  .nome{font:italic 500 clamp(26px,2.6vw,30px)/1.1 var(--display);color:var(--bordeaux);text-wrap:balance}
+  .chi{font:600 11px/1.3 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--tenue)}
+  @media (max-width:820px){
+    .frecce{display:none}
+    .fila{grid-auto-columns:68vw}
+  }
+</style>

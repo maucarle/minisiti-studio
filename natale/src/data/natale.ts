@@ -180,3 +180,22 @@ export const domande = [
   { d: 'Come ci vestiamo?', r: 'Colori caldi e naturali, quelli del set: c\'è una pagina apposta, con la palette e qualche consiglio. Se avete un dubbio, mandatemi una foto dei vestiti prima della sessione e li guardiamo insieme.' },
   { d: 'Si può regalare?', r: 'Sì, con un buono regalo, per tutte e tre le proposte. Lo preparo io a mano, nel suo vasetto della conserva, con la vostra dedica stampata dentro.' },
 ];
+
+/**
+ * La Compagnia del Natale: gli animali del set, ognuno col suo nome (nomi scelti da Elisabetta, 31/10/2026).
+ * Foto in public/foto/compagnia/, ritagliate 4:5 dagli scatti singoli del 31/10. Chi non ha ancora la foto mostra il segnaposto.
+ * Il sottotitolo di Eli diceva «una magia tutta da scoprire»: «magia» è tra le parole che la sua voce non usa, quindi «sorpresa».
+ */
+export const compagnia = {
+  titolo: 'La Compagnia del Natale',
+  sotto: 'Una prateria, tanti amici e una sorpresa tutta da scoprire.',
+  animali: [
+    { nomi: 'Biscotto', chi: 'il pony', foto: 'compagnia/biscotto.jpg' },
+    { nomi: 'Rudy', chi: 'il capriolo', foto: 'compagnia/rudy.jpg' },
+    { nomi: 'Gastone, Cannella e Meringa', chi: 'il gallo e le galline', foto: 'compagnia/pollaio.jpg' },
+    { nomi: 'Nocciola e Pistacchio', chi: 'gli scoiattoli', foto: 'compagnia/scoiattoli.jpg' },
+    { nomi: 'Pasticcio', chi: 'il procione', foto: 'compagnia/pasticcio.jpg' },
+    { nomi: 'Mafalda', chi: 'il cane, quello vero', foto: 'compagnia/mafalda.jpg' },
+    { nomi: 'Carota', chi: 'il coniglio', foto: 'compagnia/carota.jpg' },
+  ],
+};
