@@ -28,9 +28,9 @@ const stileVano = `--rapporto:${rapporto};` + (foto ? `--porta:url(${foto});--di
 // Dentro la porta: l'interno della baita (la finestra col camino) dalla foto del set; la foto vera quando c'è.
 const setVero = fs.existsSync(path.join(process.cwd(), 'public', 'foto', 'set', 'set-01.jpg'));
 const interno = setVero ? '/foto/set/set-01.jpg' : '/foto/riferimento/set.jpg';
-// dove cade la finestra nell'una e nell'altra foto; nella foto vera si stringe sulla finestra
-// (alta 175% e alzata del 12%) perché in basso c'è il cavallo, che dentro la porta ruberebbe la scena
-const fuocoInterno = setVero ? 'object-position:26% 50%;height:175%;position:relative;top:-12%' : 'object-position:29% 42%';
+// dove cade la finestra nell'una e nell'altra foto; nella foto vera (lo scatto del set del 31/10) si stringe sulla finestra
+// (alta 140% e alzata dell'8%): sopra i procioni, sotto le galline e il muso del pony
+const fuocoInterno = setVero ? 'object-position:30% 50%;height:140%;position:relative;top:-8%' : 'object-position:29% 42%';
 ---
 <section class="porta" data-porta aria-labelledby="titolo-porta">
   <div class="davanti">

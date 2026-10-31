@@ -6,13 +6,14 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-interface Props { alt: string; nota?: string }
-const { alt, nota } = Astro.props;
-// Quando arriva la foto vera del set (set/set-01.jpg) si usa quella; fino ad allora l'immagine di riferimento.
-const vera = fs.existsSync(path.join(process.cwd(), 'public', 'foto', 'set', 'set-01.jpg'));
-const src = vera ? '/foto/set/set-01.jpg' : '/foto/riferimento/set.jpg';
+// foto: un file in public/foto (es. 'set/compagnia.jpg'); fuoco: il punto che resta al centro quando il riquadro taglia (sul telefono è 4:5)
+interface Props { alt: string; nota?: string; foto?: string; fuoco?: string }
+const { alt, nota, foto = 'set/set-01.jpg', fuoco = '62% 50%' } = Astro.props;
+// Se la foto vera non c'è ancora si usa l'immagine di riferimento.
+const vera = fs.existsSync(path.join(process.cwd(), 'public', 'foto', foto));
+const src = vera ? `/foto/${foto}` : '/foto/riferimento/set.jpg';
 ---
-<figure class="vnv" data-vnv>
+<figure class="vnv" data-vnv style={`--fuoco:${fuoco}`}>
   <div class="scena">
     <img class="strato sfocato" src={src} alt="" aria-hidden="true" decoding="async" fetchpriority="high" />
     <div class="strato opale"></div>
@@ -89,12 +90,12 @@ const src = vera ? '/foto/set/set-01.jpg' : '/foto/riferimento/set.jpg';
 <style>
   .vnv{margin:0;display:grid;gap:10px}
   .scena{position:relative;overflow:hidden;aspect-ratio:1381 / 752;background:var(--carta);isolation:isolate}
-  .strato{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:62% 50%}
+  .strato{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:var(--fuoco)}
   img.strato{-webkit-touch-callout:none;user-select:none;pointer-events:none}
   .sfocato{filter:blur(16px) saturate(.9);transform:scale(1.08)}
   .opale{background:rgba(244,240,234,.47)}
   .traccia{opacity:.13;clip-path:inset(50% 50% 50% 50%)}
-  .traccia img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:62% 50%;filter:blur(16px);transform:scale(1.08)}
+  .traccia img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:var(--fuoco);filter:blur(16px);transform:scale(1.08)}
   .traccia span{position:absolute;inset:0;background:rgba(244,240,234,.26)}
   .nitido{clip-path:inset(50% 50% 50% 50%);will-change:clip-path}
   .svelato{opacity:0;transition:opacity 1.6s cubic-bezier(.4,0,.2,1)}
