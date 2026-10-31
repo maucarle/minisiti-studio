@@ -184,6 +184,7 @@ export const domande = [
 /**
  * La Compagnia del Natale: gli animali del set, ognuno col suo nome (nomi scelti da Elisabetta, 31/10/2026).
  * Foto in public/foto/compagnia/, ritagliate 4:5 dagli scatti singoli del 31/10. Chi non ha ancora la foto mostra il segnaposto.
+ * Carota, il coniglio, è tolto per ora (31/10): rientra con la sua foto.
  * Il sottotitolo di Eli diceva «una magia tutta da scoprire»: «magia» è tra le parole che la sua voce non usa, quindi «sorpresa».
  */
 export const compagnia = {
@@ -194,8 +195,7 @@ export const compagnia = {
     { nomi: 'Rudy', chi: 'il capriolo', foto: 'compagnia/rudy.jpg' },
     { nomi: 'Gastone, Cannella e Meringa', chi: 'il gallo e le galline', foto: 'compagnia/pollaio.jpg' },
     { nomi: 'Nocciola e Pistacchio', chi: 'gli scoiattoli', foto: 'compagnia/scoiattoli.jpg' },
-    { nomi: 'Pasticcio', chi: 'il procione', foto: 'compagnia/pasticcio.jpg' },
+    { nomi: 'Pasticcio e Caramello', chi: 'i procioni', foto: 'compagnia/procioni.jpg' },
     { nomi: 'Mafalda', chi: 'il cane, quello vero', foto: 'compagnia/mafalda.jpg' },
-    { nomi: 'Carota', chi: 'il coniglio', foto: 'compagnia/carota.jpg' },
   ],
 };
