@@ -28,7 +28,7 @@ const schema = {
     {proposte.map((p) => (
       <article id={p.id} class:list={['carta', { lunga: p.ritratto }]}>
         <header class="pila" style="gap:6px">
-          <span class="occhiello">{p.settimana ? 'in settimana' : 'nei weekend di novembre'}</span>
+          <span class="occhiello">{p.suAppuntamento ? 'il giorno che preferite' : 'nei weekend di novembre'}</span>
           <h2>{p.nome}</h2>
           <p class="prezzo">{p.prezzo} €</p>
         </header>
@@ -58,7 +58,7 @@ const schema = {
         <legend>La proposta</legend>
         <div class="scelte">
           {proposte.map((p, i) => (
-            <label class="scelta"><input type="radio" name="proposta" value={p.id} data-nome={p.conArticolo} data-settimana={p.settimana ? '1' : '0'} checked={i === 2} /><span>{p.nome} <small>{p.prezzo} €</small></span></label>
+            <label class="scelta"><input type="radio" name="proposta" value={p.id} data-nome={p.conArticolo} data-appuntamento={p.suAppuntamento ? '1' : '0'} checked={i === 2} /><span>{p.nome} <small>{p.prezzo} €</small></span></label>
           ))}
         </div>
       </fieldset>
@@ -73,8 +73,8 @@ const schema = {
       </fieldset>
 
       <fieldset id="campo-settimana" hidden>
-        <legend>In settimana, quando vi va meglio?</legend>
-        <input id="settimana" name="settimana" type="text" maxlength="80" placeholder="per esempio: martedì o giovedì pomeriggio" />
+        <legend>Quando vi va meglio?</legend>
+        <input id="settimana" name="settimana" type="text" maxlength="80" placeholder="per esempio: un martedì pomeriggio di dicembre" />
       </fieldset>
 
       <fieldset>
@@ -106,14 +106,14 @@ const schema = {
 
   function aggiorna() {
     const p = form.querySelector<HTMLInputElement>('input[name="proposta"]:checked')!;
-    const settimana = p.dataset.settimana === '1';
+    const settimana = p.dataset.appuntamento === '1';
     campoDate.hidden = settimana;
     campoSettimana.hidden = !settimana;
     const fascia = (form.querySelector<HTMLInputElement>('input[name="fascia"]:checked')?.value) ?? 'è uguale';
     let quando: string;
     if (settimana) {
       const pref = (form.querySelector<HTMLInputElement>('#settimana')!.value || '').trim();
-      quando = pref ? `in settimana, ${pref}` : 'in settimana, quando avete posto';
+      quando = pref || 'il giorno che avete libero';
     } else {
       quando = form.querySelector<HTMLInputElement>('input[name="giorno"]:checked')!.value;
     }

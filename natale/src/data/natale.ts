@@ -46,7 +46,8 @@ export type Proposta = {
   durata: string;
   sintesi: string;
   cosa: string[];
-  settimana: boolean;
+  /** true: il giorno che si preferisce, finché c'è il set; false: solo nelle date fisse (dateMini) */
+  suAppuntamento: boolean;
   ritratto: boolean;
 };
 
@@ -57,7 +58,7 @@ export const proposte: Proposta[] = [
     nome: 'Natale in Grande',
     conArticolo: 'il Natale in Grande',
     prezzo: 350,
-    quando: 'in settimana, su appuntamento',
+    quando: 'su appuntamento, fino a gennaio',
     durata: 'circa 45-50 minuti',
     sintesi: "Per tutta la famiglia, con il tempo per tutti e due i set: il Natale e il ritratto in studio, con un cambio d'abito.",
     cosa: [
@@ -66,7 +67,7 @@ export const proposte: Proposta[] = [
       'una foto 30x40 in cornice bianca o nera, senza passepartout, pronta da appendere',
       '2 ingrandimenti Fine Art 20x30, da tenere o da regalare',
     ],
-    settimana: true,
+    suAppuntamento: true,
     ritratto: true,
   },
   {
@@ -74,7 +75,7 @@ export const proposte: Proposta[] = [
     nome: 'Natale in Cornice',
     conArticolo: 'il Natale in Cornice',
     prezzo: 270,
-    quando: 'in settimana, su appuntamento',
+    quando: 'su appuntamento, fino a gennaio',
     durata: 'circa 35-40 minuti',
     sintesi: 'Il set di Natale e il ritratto classico della vostra famiglia, con una foto già in cornice.',
     cosa: [
@@ -82,7 +83,7 @@ export const proposte: Proposta[] = [
       '7 stampe Fine Art 13x19 e i loro 7 file in alta risoluzione, tra set di Natale e ritratto',
       'una foto 20x30 con passepartout bianco, in cornice 30x40 bianca o nera',
     ],
-    settimana: true,
+    suAppuntamento: true,
     ritratto: true,
   },
   {
@@ -97,7 +98,7 @@ export const proposte: Proposta[] = [
       'galleria privata con circa 35-40 provini',
       '5 stampe Fine Art 13x19 e i loro 5 file in alta risoluzione',
     ],
-    settimana: false,
+    suAppuntamento: false,
     ritratto: false,
   },
 ];
@@ -129,8 +130,8 @@ export const voci = {
 // Cosa si può regalare col buono nel vasetto. Le proposte di Natale valgono solo finché c'è il set.
 export const cosaRegalare = [
   { id: 'mini', nome: 'la Mini Sessione di Natale', nota: '190 €, nei weekend del 7-8 e 14-15 novembre' },
-  { id: 'cornice', nome: 'il Natale in Cornice', nota: '270 €, in settimana su appuntamento' },
-  { id: 'grande', nome: 'il Natale in Grande', nota: '350 €, in settimana su appuntamento' },
+  { id: 'cornice', nome: 'il Natale in Cornice', nota: '270 €, su appuntamento fino a gennaio' },
+  { id: 'grande', nome: 'il Natale in Grande', nota: '350 €, su appuntamento fino a gennaio' },
   { id: 'progetto', nome: 'un altro progetto dello studio', nota: 'pancione, neonato, famiglia: ne parliamo insieme' },
 ];
 
@@ -172,7 +173,7 @@ export const perChi = [
 
 // Domande con risposta presa dai testi approvati. Le domande senza risposta decisa da Eli stanno in PUNTI-APERTI, non qui.
 export const domande = [
-  { d: 'Come si prenota?', r: "Scrivetemi su WhatsApp o chiamatemi al 333 6265276, oppure scrivete a info@elisabettacquaviva.it. La proposta si sceglie quando si prenota, perché giorno e durata cambiano. Per la Mini Sessione le date sono sabato 7 e domenica 8, sabato 14 e domenica 15 novembre; Natale in Cornice e Natale in Grande sono in settimana, su appuntamento." },
+  { d: 'Come si prenota?', r: "Scrivetemi su WhatsApp o chiamatemi al 333 6265276, oppure scrivete a info@elisabettacquaviva.it. La proposta si sceglie quando si prenota, perché giorno e durata cambiano. Per la Mini Sessione le date sono sabato 7 e domenica 8, sabato 14 e domenica 15 novembre; Natale in Cornice e Natale in Grande si fanno il giorno che preferite, su appuntamento, finché c'è il set: fino a gennaio." },
   { d: 'Quanto dura la sessione?', r: 'La Mini Sessione circa 20-25 minuti, il Natale in Cornice circa 35-40, il Natale in Grande circa 45-50.' },
   { d: 'Come e quando scegliamo le foto?', r: 'Dopo la sessione vi mando la galleria privata, protetta da password: le foto le scegliete voi, con calma, a casa.' },
   { d: 'E le cornici?', r: 'Sono già in studio, bianche o nere. Appena scegliete la foto preferita la ritocchiamo, la mettiamo in cornice e passate a ritirarla. Sono senza vetro, per scelta.' },
