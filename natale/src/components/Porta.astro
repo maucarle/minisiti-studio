@@ -6,6 +6,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { proposte, MODO_PORTA } from '../data/natale';
+import MiniQuando from './MiniQuando.astro';
 
 // La porta vera, se c'è: dimensioni lette dal JPEG (marcatore SOF), per dare al vano le sue proporzioni.
 function misureJpeg(file: string): { w: number; h: number } | null {
@@ -64,7 +65,7 @@ const fuocoInterno = setVero ? 'object-position:30% 50%;height:140%;position:rel
           <li>
             <a href={`/sessioni/#${p.id}`}>
               <span class="nome">{p.nome}</span>
-              <span class="quando">{p.quando}</span>
+              <span class="quando">{p.id === 'mini' ? <MiniQuando campo="quando" /> : p.quando}</span>
               <span class="prezzo">{p.prezzo} €</span>
             </a>
           </li>

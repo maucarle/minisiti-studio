@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
-import { proposte, dateMini, fileExtra, linkWhatsApp, contatti } from '../data/natale';
+import { proposte, dateMini, fileExtra, linkWhatsApp, contatti, faseMini, fasiMini, giornoVisibile } from '../data/natale';
+import MiniQuando from '../components/MiniQuando.astro';
 
 const schema = {
   '@context': 'https://schema.org',
@@ -28,16 +29,16 @@ const schema = {
     {proposte.map((p) => (
       <article id={p.id} class:list={['carta', { lunga: p.ritratto }]}>
         <header class="pila" style="gap:6px">
-          <span class="occhiello">{p.suAppuntamento ? 'il giorno che preferite' : 'nei weekend di novembre'}</span>
+          <span class="occhiello">{p.suAppuntamento ? 'il giorno che preferite' : <MiniQuando campo="occhiello" />}</span>
           <h2>{p.nome}</h2>
           <p class="prezzo">{p.prezzo} €</p>
         </header>
         <p class="sintesi">{p.sintesi}</p>
-        <p class="tempo"><strong>{p.durata}</strong>, {p.quando}</p>
+        <p class="tempo"><strong>{p.durata}</strong>, {p.id === 'mini' ? <MiniQuando campo="quando" /> : p.quando}</p>
         <ul>
           {p.cosa.map((c) => <li>{c}</li>)}
         </ul>
-        <a class:list={['bottone', { chiaro: !p.ritratto }]} href={linkWhatsApp(`Ciao Elisabetta, ho visto la pagina del Natale e vorrei prenotare ${p.conArticolo}`)} rel="noopener">Prenota {p.nome}</a>
+        <a class:list={['bottone', { chiaro: !p.ritratto }]} data-mini-attiva={p.id === 'mini' ? '' : undefined} hidden={p.id === 'mini' && faseMini() === fasiMini.length - 1} href={linkWhatsApp(`Ciao Elisabetta, ho visto la pagina del Natale e vorrei prenotare ${p.conArticolo}`)} rel="noopener">Prenota {p.nome}</a>
       </article>
     ))}
   </section>
@@ -58,7 +59,7 @@ const schema = {
         <legend>La proposta</legend>
         <div class="scelte">
           {proposte.map((p, i) => (
-            <label class="scelta"><input type="radio" name="proposta" value={p.id} data-nome={p.conArticolo} data-appuntamento={p.suAppuntamento ? '1' : '0'} checked={i === 2} /><span>{p.nome} <small>{p.prezzo} €</small></span></label>
+            <label class="scelta" data-mini-attiva={p.id === 'mini' ? '' : undefined} hidden={p.id === 'mini' && faseMini() === fasiMini.length - 1}><input type="radio" name="proposta" value={p.id} data-nome={p.conArticolo} data-appuntamento={p.suAppuntamento ? '1' : '0'} checked={i === 2} /><span>{p.nome} <small>{p.prezzo} €</small></span></label>
           ))}
         </div>
       </fieldset>
@@ -67,7 +68,7 @@ const schema = {
         <legend>Il giorno</legend>
         <div class="scelte">
           {dateMini.map((d, i) => (
-            <label class="scelta"><input type="radio" name="giorno" value={d.etichetta} checked={i === 0} /><span>{d.etichetta}</span></label>
+            <label class="scelta" data-giorno={d.data} data-dal={d.dal} hidden={!giornoVisibile(d)}><input type="radio" name="giorno" value={d.etichetta} checked={i === 0} /><span>{d.etichetta}</span></label>
           ))}
         </div>
       </fieldset>
@@ -125,9 +126,14 @@ const schema = {
   form.addEventListener('input', aggiorna);
   form.addEventListener('change', aggiorna);
   form.addEventListener('submit', (e) => e.preventDefault());
+  // Giorni passati e Mini finita: lo script in Base.astro ha già nascosto le etichette, qui si sistema la scelta.
+  const giorni = [...form.querySelectorAll<HTMLLabelElement>('label[data-giorno]')].filter((l) => !l.hidden);
+  if (giorni.length && !giorni.some((l) => l.querySelector('input')!.checked)) giorni[0].querySelector('input')!.checked = true;
+  const mini = form.querySelector<HTMLLabelElement>('label[data-mini-attiva]');
+  if (mini?.hidden && mini.querySelector('input')!.checked) form.querySelector<HTMLInputElement>('input[name="proposta"]:not([value="mini"])')!.checked = true;
   if (location.hash) {
     const scelta = form.querySelector<HTMLInputElement>(`input[name="proposta"][value="${location.hash.slice(1)}"]`);
-    if (scelta) scelta.checked = true;
+    if (scelta && !scelta.closest('label')?.hidden) scelta.checked = true;
   }
   aggiorna();
 </script>

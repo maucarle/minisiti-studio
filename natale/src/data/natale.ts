@@ -29,11 +29,41 @@ export function linkWhatsApp(testo: string): string {
   return `https://wa.me/${contatti.whatsapp}?text=${encodeURIComponent(testo)}`;
 }
 
+/**
+ * Le date della Mini Sessione cambiano da sole col calendario (deciso da Mauro il 1/11/2026):
+ * fino al 15/11 i primi due weekend, dal 16/11 il terzo (21-22), dal 23/11 finite.
+ * Il sito è statico: la fase giusta la sceglie lo script in Base.astro con la data di oggi
+ * (per provarla: ?oggi=2026-11-16); senza JavaScript vale la fase del giorno della build.
+ */
+export const fasiMini = [
+  { al: '2026-11-15', quando: 'sabato 7 e domenica 8, sabato 14 e domenica 15 novembre', breve: '190 €, nei weekend del 7-8 e 14-15 novembre', occhiello: 'nei weekend di novembre', faq: 'sabato 7 e domenica 8, sabato 14 e domenica 15 novembre' },
+  { al: '2026-11-22', quando: 'sabato 21 e domenica 22 novembre', breve: '190 €, sabato 21 e domenica 22 novembre', occhiello: 'sabato 21 e domenica 22 novembre', faq: 'sabato 21 e domenica 22 novembre' },
+  { al: '9999-12-31', quando: "le mini sessioni di quest'anno sono finite", breve: "190 €, le date di quest'anno sono finite", occhiello: "finite per quest'anno", faq: "finite per quest'anno" },
+];
+
+/** Indice della fase della Mini Sessione per una data YYYY-MM-DD (al momento della build). */
+export function faseMini(oggi = oggiRoma()): number {
+  return fasiMini.findIndex((f) => oggi <= f.al);
+}
+
+/** Data di oggi a Roma, YYYY-MM-DD. */
+export function oggiRoma(): string {
+  return new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Rome' });
+}
+
+/** Un giorno del modulo si vede da `dal` (se c'è) fino al giorno stesso compreso. */
+export function giornoVisibile(d: { data: string; dal?: string }, oggi = oggiRoma()): boolean {
+  return oggi <= d.data && (!d.dal || oggi >= d.dal);
+}
+
+/** I giorni del modulo: ognuno sparisce il giorno dopo; il terzo weekend compare dal 16/11. */
 export const dateMini = [
-  { id: 'sab7', etichetta: 'sabato 7 novembre' },
-  { id: 'dom8', etichetta: 'domenica 8 novembre' },
-  { id: 'sab14', etichetta: 'sabato 14 novembre' },
-  { id: 'dom15', etichetta: 'domenica 15 novembre' },
+  { id: 'sab7', etichetta: 'sabato 7 novembre', data: '2026-11-07' },
+  { id: 'dom8', etichetta: 'domenica 8 novembre', data: '2026-11-08' },
+  { id: 'sab14', etichetta: 'sabato 14 novembre', data: '2026-11-14' },
+  { id: 'dom15', etichetta: 'domenica 15 novembre', data: '2026-11-15' },
+  { id: 'sab21', etichetta: 'sabato 21 novembre', data: '2026-11-21', dal: '2026-11-16' },
+  { id: 'dom22', etichetta: 'domenica 22 novembre', data: '2026-11-22', dal: '2026-11-16' },
 ];
 
 export type Proposta = {
@@ -173,12 +203,13 @@ export const perChi = [
 
 // Domande con risposta presa dai testi approvati. Le domande senza risposta decisa da Eli stanno in PUNTI-APERTI, non qui.
 export const domande = [
-  { d: 'Come si prenota?', r: "Scrivetemi su WhatsApp o chiamatemi al 333 6265276, oppure scrivete a info@elisabettacquaviva.it. La proposta si sceglie quando si prenota, perché giorno e durata cambiano. Per la Mini Sessione le date sono sabato 7 e domenica 8, sabato 14 e domenica 15 novembre; Natale in Cornice e Natale in Grande si fanno il giorno che preferite, su appuntamento, finché c'è il set: fino a gennaio." },
+  { d: 'Come si prenota?', r: "Scrivetemi su WhatsApp o chiamatemi al 333 6265276, oppure scrivete a info@elisabettacquaviva.it. La proposta si sceglie quando si prenota, perché giorno e durata cambiano. Per la Mini Sessione le date sono nella pagina delle proposte; Natale in Cornice e Natale in Grande si fanno il giorno che preferite, su appuntamento, finché c'è il set: fino a gennaio." },
   { d: 'Quanto dura la sessione?', r: 'La Mini Sessione circa 20-25 minuti, il Natale in Cornice circa 35-40, il Natale in Grande circa 45-50.' },
   { d: 'Come e quando scegliamo le foto?', r: 'Dopo la sessione vi mando la galleria privata, protetta da password: le foto le scegliete voi, con calma, a casa.' },
   { d: 'E le cornici?', r: 'Sono già in studio, bianche o nere. Appena scegliete la foto preferita la ritocchiamo, la mettiamo in cornice e passate a ritirarla. Sono senza vetro, per scelta.' },
   { d: 'Posso avere più foto di quelle comprese?', r: 'Sì: per il set di Natale ogni file in alta risoluzione in più costa 10 €. Le stampe in più e le idee regalo si ordinano dalla galleria o qui in studio.' },
   { d: 'Come ci vestiamo?', r: 'Colori caldi e naturali, quelli del set: c\'è una pagina apposta, con la palette e qualche consiglio. Se avete un dubbio, mandatemi una foto dei vestiti prima della sessione e li guardiamo insieme.' },
+  { d: 'Il cane c\'è sul set?', r: 'Mafalda è il nostro cane, ma sul set non c\'è mai: potete stare tranquilli anche con i bimbi che hanno un po\' di paura dei cani.' },
   { d: 'Si può regalare?', r: 'Sì, con un buono regalo, per tutte e tre le proposte. Lo preparo io a mano, nel suo vasetto della conserva, con la vostra dedica stampata dentro.' },
 ];
 
@@ -190,7 +221,7 @@ export const domande = [
  */
 export const compagnia = {
   titolo: 'La Compagnia del Natale',
-  sotto: 'Una prateria, tanti amici e una sorpresa tutta da scoprire.',
+  sotto: 'Davanti alla baita, una prateria, tanti amici e una sorpresa tutta da scoprire.',
   animali: [
     { nomi: 'Biscotto', chi: 'il pony', foto: 'compagnia/biscotto.jpg' },
     { nomi: 'Rudy', chi: 'il capriolo', foto: 'compagnia/rudy.jpg' },

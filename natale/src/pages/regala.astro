@@ -1,7 +1,8 @@
 ---
 import Base from '../layouts/Base.astro';
 import Foto from '../components/Foto.astro';
-import { cosaRegalare, voci, linkWhatsApp, contatti } from '../data/natale';
+import { cosaRegalare, voci, linkWhatsApp, contatti, faseMini, fasiMini } from '../data/natale';
+import MiniQuando from '../components/MiniQuando.astro';
 ---
 <Base
   title="Regalare il Natale in studio · il buono nel vasetto"
@@ -33,7 +34,7 @@ import { cosaRegalare, voci, linkWhatsApp, contatti } from '../data/natale';
           <legend>Cosa regalate</legend>
           <div class="scelte">
             {cosaRegalare.map((c, i) => (
-              <label class="scelta"><input type="radio" name="cosa" value={c.nome} checked={i === 1} /><span>{c.nome}<small>{c.nota}</small></span></label>
+              <label class="scelta" data-mini-attiva={c.id === 'mini' ? '' : undefined} hidden={c.id === 'mini' && faseMini() === fasiMini.length - 1}><input type="radio" name="cosa" value={c.nome} checked={i === 1} /><span>{c.nome}<small>{c.id === 'mini' ? <MiniQuando campo="breve" /> : c.nota}</small></span></label>
             ))}
           </div>
         </fieldset>

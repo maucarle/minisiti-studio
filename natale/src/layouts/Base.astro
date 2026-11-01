@@ -47,6 +47,7 @@ const canonico = new URL(Astro.url.pathname, Astro.site).href;
         color-scheme:light;
       }
       *,*::before,*::after{box-sizing:border-box}
+      [hidden]{display:none !important}
       html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
       @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
       body{margin:0;background:var(--crema);color:var(--testo);font:17px/1.65 var(--sans);text-rendering:optimizeLegibility}
@@ -91,6 +92,24 @@ const canonico = new URL(Astro.url.pathname, Astro.site).href;
     </header>
 
     <main><slot /></main>
+    <script is:inline>
+      // Date della Mini Sessione col calendario (fasiMini in natale.ts). ?oggi=AAAA-MM-GG per provarle.
+      (function () {
+        var p = new URLSearchParams(location.search).get('oggi');
+        var oggi = /^\d{4}-\d{2}-\d{2}$/.test(p || '') ? p : new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Rome' });
+        var finita = false;
+        document.querySelectorAll('[data-fasi-mini]').forEach(function (g) {
+          var fasi = Array.prototype.slice.call(g.children);
+          var i = fasi.findIndex(function (f) { return oggi <= f.dataset.al; });
+          fasi.forEach(function (f, j) { f.hidden = j !== i; });
+          finita = i === fasi.length - 1;
+        });
+        document.querySelectorAll('[data-giorno]').forEach(function (el) {
+          el.hidden = oggi > el.dataset.giorno || (el.dataset.dal ? oggi < el.dataset.dal : false);
+        });
+        document.querySelectorAll('[data-mini-attiva]').forEach(function (el) { el.hidden = finita; });
+      })();
+    </script>
 
     <footer class="piede">
       <div class="wrap griglia-piede">

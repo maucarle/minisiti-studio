@@ -1,0 +1,9 @@
+---
+// Testo della Mini Sessione che cambia col calendario (vedi fasiMini in natale.ts).
+// Scrive tutte le fasi e mostra quella del giorno della build; lo script in Base.astro corregge con la data di oggi.
+import { fasiMini, faseMini } from '../data/natale';
+type Props = { campo: 'quando' | 'breve' | 'occhiello' };
+const { campo } = Astro.props;
+const attuale = faseMini();
+---
+<span data-fasi-mini>{fasiMini.map((f, i) => <span data-al={f.al} hidden={i !== attuale}>{f[campo]}</span>)}</span>
