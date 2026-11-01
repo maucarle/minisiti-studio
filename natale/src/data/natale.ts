@@ -133,7 +133,7 @@ export const proposte: Proposta[] = [
   },
 ];
 
-export const fileExtra = 'Ogni file in alta risoluzione in più costa 10 €, solo per il set di Natale.';
+export const fileExtra = 'Ogni file in alta risoluzione in più costa 10 €, in tutte e tre le proposte, anche le foto del ritratto.';
 
 export const palette = [
   { nome: 'Avorio', hex: '#EFE6D2' },
@@ -207,7 +207,7 @@ export const domande = [
   { d: 'Quanto dura la sessione?', r: 'La Mini Sessione circa 20-25 minuti, il Natale in Cornice circa 35-40, il Natale in Grande circa 45-50.' },
   { d: 'Come e quando scegliamo le foto?', r: 'Dopo la sessione vi mando la galleria privata, protetta da password: le foto le scegliete voi, con calma, a casa.' },
   { d: 'E le cornici?', r: 'Sono già in studio, bianche o nere. Appena scegliete la foto preferita la ritocchiamo, la mettiamo in cornice e passate a ritirarla. Sono senza vetro, per scelta.' },
-  { d: 'Posso avere più foto di quelle comprese?', r: 'Sì: per il set di Natale ogni file in alta risoluzione in più costa 10 €. Le stampe in più e le idee regalo si ordinano dalla galleria o qui in studio.' },
+  { d: 'Posso avere più foto di quelle comprese?', r: 'Sì: in tutte e tre le proposte ogni file in alta risoluzione in più costa 10 €, anche le foto del ritratto. Le stampe in più e le idee regalo si ordinano dalla galleria o qui in studio.' },
   { d: 'Come ci vestiamo?', r: 'Colori caldi e naturali, quelli del set: c\'è una pagina apposta, con la palette e qualche consiglio. Se avete un dubbio, mandatemi una foto dei vestiti prima della sessione e li guardiamo insieme.' },
   { d: 'Il cane c\'è sul set?', r: 'Mafalda è il nostro cane, ma sul set non c\'è mai: potete stare tranquilli anche con i bimbi che hanno un po\' di paura dei cani.' },
   { d: 'Si può regalare?', r: 'Sì, con un buono regalo, per tutte e tre le proposte. Lo preparo io a mano, nel suo vasetto della conserva, con la vostra dedica stampata dentro.' },
