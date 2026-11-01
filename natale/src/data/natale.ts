@@ -117,7 +117,7 @@ export const palette = [
 // Recensioni Google già pubblicate sul sito (pagina Detto da voi e pagina del buono), nome e iniziale.
 export const voci = {
   famiglie: [
-    { testo: 'Le foto sono meravigliose, tanto che il "problema" è che si fa fatica a sceglierle! Noi continuiamo a sceglierla per le nostre foto di famiglia.', chi: 'Marianna M.', quando: 'agosto 2026' },
+    { testo: 'Le foto sono meravigliose, tanto che il “problema” è che si fa fatica a sceglierle! Noi continuiamo a sceglierla per le nostre foto di famiglia.', chi: 'Marianna M.', quando: 'agosto 2026' },
     { testo: 'Una grande professionista, simpatica ed ha una capacità pazzesca nel far divertire e metterti a proprio agio.', chi: 'Ludmila B.', quando: 'settembre 2026' },
     { testo: 'Ad oggi tre album bellissimi (…) Non vediamo l\'ora di rivederci per il prossimo round :)', chi: 'Anna P.', quando: 'agosto 2026' },
   ],
