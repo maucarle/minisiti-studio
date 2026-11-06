@@ -1,5 +1,5 @@
 ---
-// La Compagnia del Natale: gli animali del set uno dopo l'altro, in fila, come una compagnia in cammino.
+// La Gang del Natale (fino al 6/11/2026 «la Compagnia»): gli animali del set uno dopo l'altro, in fila, come una compagnia in cammino.
 // Una riga che scorre di lato (col dito, o con le frecce sul computer) e che parte allineata alla colonna ed esce dal bordo destro.
 // Entrando, le schede arrivano una alla volta. Senza JavaScript o col movimento ridotto la fila è ferma e completa.
 import Foto from './Foto.astro';
@@ -17,7 +17,7 @@ import { compagnia } from '../data/natale';
       <button type="button" class="freccia" data-verso="1" tabindex="-1">›</button>
     </div>
   </div>
-  <ol class="fila" tabindex="0" aria-label="Gli animali della compagnia">
+  <ol class="fila" tabindex="0" aria-label="Gli animali della Gang del Natale">
     {compagnia.animali.map((a) => (
       <li class="animale">
         <Foto src={a.foto} alt={`${a.nomi}, ${a.chi} del set di Natale`} etichetta={`${a.nomi} arriva a giorni`} rapporto="4 / 5" />

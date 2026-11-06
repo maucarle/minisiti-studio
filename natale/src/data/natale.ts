@@ -214,13 +214,13 @@ export const domande = [
 ];
 
 /**
- * La Compagnia del Natale: gli animali del set, ognuno col suo nome (nomi scelti da Elisabetta, 31/10/2026).
+ * La Gang del Natale (prima «la Compagnia», rinominata da Mauro il 6/11/2026): gli animali del set, ognuno col suo nome (nomi scelti da Elisabetta, 31/10/2026).
  * Foto in public/foto/compagnia/, ritagliate 4:5 dagli scatti singoli del 31/10. Chi non ha ancora la foto mostra il segnaposto.
  * Carota, il coniglio, è tolto per ora (31/10): rientra con la sua foto.
  * Il sottotitolo di Eli diceva «una magia tutta da scoprire»: «magia» è tra le parole che la sua voce non usa, quindi «sorpresa».
  */
 export const compagnia = {
-  titolo: 'La Compagnia del Natale',
+  titolo: 'La Gang del Natale',
   sotto: 'Davanti alla baita, una prateria, tanti amici e una sorpresa tutta da scoprire.',
   animali: [
     { nomi: 'Biscotto', chi: 'il pony', foto: 'compagnia/biscotto.jpg' },
