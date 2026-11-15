@@ -31,13 +31,13 @@ export function linkWhatsApp(testo: string): string {
 
 /**
  * Le date della Mini Sessione cambiano da sole col calendario (deciso da Mauro il 1/11/2026):
- * fino al 15/11 i primi due weekend, dal 16/11 il terzo (21-22), dal 23/11 finite.
+ * fino al 14/11 i primi due weekend, dal 15/11 il terzo (21-22, la domenica 22 solo la mattina: Mauro, 15/11), dal 23/11 finite.
  * Il sito è statico: la fase giusta la sceglie lo script in Base.astro con la data di oggi
- * (per provarla: ?oggi=2026-11-16); senza JavaScript vale la fase del giorno della build.
+ * (per provarla: ?oggi=2026-11-15); senza JavaScript vale la fase del giorno della build.
  */
 export const fasiMini = [
-  { al: '2026-11-15', quando: 'sabato 7 e domenica 8, sabato 14 e domenica 15 novembre', breve: '190 €, nei weekend del 7-8 e 14-15 novembre', occhiello: 'nei weekend di novembre', faq: 'sabato 7 e domenica 8, sabato 14 e domenica 15 novembre' },
-  { al: '2026-11-22', quando: 'sabato 21 e domenica 22 novembre', breve: '190 €, sabato 21 e domenica 22 novembre', occhiello: 'sabato 21 e domenica 22 novembre', faq: 'sabato 21 e domenica 22 novembre' },
+  { al: '2026-11-14', quando: 'sabato 7 e domenica 8, sabato 14 e domenica 15 novembre', breve: '190 €, nei weekend del 7-8 e 14-15 novembre', occhiello: 'nei weekend di novembre', faq: 'sabato 7 e domenica 8, sabato 14 e domenica 15 novembre' },
+  { al: '2026-11-22', quando: 'sabato 21 e domenica 22 novembre, la domenica solo la mattina', breve: '190 €, sabato 21 e domenica 22 novembre (la domenica solo la mattina)', occhiello: 'sabato 21 e domenica 22 novembre', faq: 'sabato 21 e domenica 22 novembre, la domenica solo la mattina' },
   { al: '9999-12-31', quando: "le mini sessioni di quest'anno sono finite", breve: "190 €, le date di quest'anno sono finite", occhiello: "finite per quest'anno", faq: "finite per quest'anno" },
 ];
 
@@ -56,14 +56,14 @@ export function giornoVisibile(d: { data: string; dal?: string }, oggi = oggiRom
   return oggi <= d.data && (!d.dal || oggi >= d.dal);
 }
 
-/** I giorni del modulo: ognuno sparisce il giorno dopo; il terzo weekend compare dal 16/11. */
+/** I giorni del modulo: ognuno sparisce il giorno dopo; il terzo weekend compare dal 15/11. `soloMattina`: niente pomeriggio. */
 export const dateMini = [
   { id: 'sab7', etichetta: 'sabato 7 novembre', data: '2026-11-07' },
   { id: 'dom8', etichetta: 'domenica 8 novembre', data: '2026-11-08' },
   { id: 'sab14', etichetta: 'sabato 14 novembre', data: '2026-11-14' },
   { id: 'dom15', etichetta: 'domenica 15 novembre', data: '2026-11-15' },
-  { id: 'sab21', etichetta: 'sabato 21 novembre', data: '2026-11-21', dal: '2026-11-16' },
-  { id: 'dom22', etichetta: 'domenica 22 novembre', data: '2026-11-22', dal: '2026-11-16' },
+  { id: 'sab21', etichetta: 'sabato 21 novembre', data: '2026-11-21', dal: '2026-11-15' },
+  { id: 'dom22', etichetta: 'domenica 22 novembre', data: '2026-11-22', dal: '2026-11-15', soloMattina: true },
 ];
 
 export type Proposta = {

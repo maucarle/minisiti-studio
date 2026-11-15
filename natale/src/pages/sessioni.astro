@@ -68,7 +68,7 @@ const schema = {
         <legend>Il giorno</legend>
         <div class="scelte">
           {dateMini.map((d, i) => (
-            <label class="scelta" data-giorno={d.data} data-dal={d.dal} hidden={!giornoVisibile(d)}><input type="radio" name="giorno" value={d.etichetta} checked={i === 0} /><span>{d.etichetta}</span></label>
+            <label class="scelta" data-giorno={d.data} data-dal={d.dal} hidden={!giornoVisibile(d)}><input type="radio" name="giorno" value={d.etichetta} data-solo-mattina={d.soloMattina ? '1' : undefined} checked={i === 0} /><span>{d.etichetta}{d.soloMattina && <small>solo mattina</small>}</span></label>
           ))}
         </div>
       </fieldset>
@@ -110,6 +110,14 @@ const schema = {
     const settimana = p.dataset.appuntamento === '1';
     campoDate.hidden = settimana;
     campoSettimana.hidden = !settimana;
+    // un giorno solo la mattina (domenica 22): il pomeriggio non si può scegliere
+    const soloMattina = !settimana && form.querySelector<HTMLInputElement>('input[name="giorno"]:checked')?.dataset.soloMattina === '1';
+    form.querySelectorAll<HTMLInputElement>('input[name="fascia"]').forEach((f) => {
+      const vietata = soloMattina && f.value !== 'mattina';
+      f.disabled = vietata;
+      f.closest('label')!.hidden = vietata;
+      if (vietata && f.checked) form.querySelector<HTMLInputElement>('input[name="fascia"][value="mattina"]')!.checked = true;
+    });
     const fascia = (form.querySelector<HTMLInputElement>('input[name="fascia"]:checked')?.value) ?? 'è uguale';
     let quando: string;
     if (settimana) {
