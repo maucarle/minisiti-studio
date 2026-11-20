@@ -32,13 +32,13 @@ export function linkWhatsApp(testo: string): string {
 /**
  * Le date della Mini Sessione cambiano da sole col calendario (deciso da Mauro il 1/11/2026):
  * fino al 14/11 i primi due weekend di novembre; poi due weekend di dicembre, il sabato tutto il giorno e la domenica solo la mattina
- * (5-6 e 12-13: Mauro, 20/11, al posto del 21-22 novembre, ormai pieno; sabato 5 è già pieno, quindi non si propone); dal 14/12 finite.
+ * (5-6 e 12-13: Mauro, 20/11, al posto del 21-22 novembre, ormai pieno; sabato 5 confermato da Mauro il 20/11); dal 14/12 finite.
  * Il sito è statico: la fase giusta la sceglie lo script in Base.astro con la data di oggi
  * (per provarla: ?oggi=2026-12-07); senza JavaScript vale la fase del giorno della build.
  */
 export const fasiMini = [
   { al: '2026-11-14', quando: 'sabato 7 e domenica 8, sabato 14 e domenica 15 novembre', breve: '190 €, nei weekend del 7-8 e 14-15 novembre', occhiello: 'nei weekend di novembre', faq: 'sabato 7 e domenica 8, sabato 14 e domenica 15 novembre' },
-  { al: '2026-12-06', quando: 'sabato 12 dicembre, o domenica 6 e domenica 13 dicembre la mattina', breve: '190 €, sabato 12 dicembre, o domenica 6 e 13 dicembre la mattina', occhiello: 'a dicembre', faq: 'sabato 12 dicembre, o domenica 6 e domenica 13 dicembre la mattina' },
+  { al: '2026-12-06', quando: 'sabato 5 e domenica 6, sabato 12 e domenica 13 dicembre, la domenica solo la mattina', breve: '190 €, nei weekend del 5-6 e 12-13 dicembre (la domenica solo la mattina)', occhiello: 'nei weekend di dicembre', faq: 'sabato 5 e domenica 6, sabato 12 e domenica 13 dicembre, la domenica solo la mattina' },
   { al: '2026-12-13', quando: 'sabato 12 e domenica 13 dicembre, la domenica solo la mattina', breve: '190 €, sabato 12 e domenica 13 dicembre (la domenica solo la mattina)', occhiello: 'sabato 12 e domenica 13 dicembre', faq: 'sabato 12 e domenica 13 dicembre, la domenica solo la mattina' },
   { al: '9999-12-31', quando: "le mini sessioni di quest'anno sono finite", breve: "190 €, le date di quest'anno sono finite", occhiello: "finite per quest'anno", faq: "finite per quest'anno" },
 ];
@@ -64,6 +64,7 @@ export const dateMini = [
   { id: 'dom8', etichetta: 'domenica 8 novembre', data: '2026-11-08' },
   { id: 'sab14', etichetta: 'sabato 14 novembre', data: '2026-11-14' },
   { id: 'dom15', etichetta: 'domenica 15 novembre', data: '2026-11-15' },
+  { id: 'sab5', etichetta: 'sabato 5 dicembre', data: '2026-12-05' },
   { id: 'dom6', etichetta: 'domenica 6 dicembre', data: '2026-12-06', soloMattina: true },
   { id: 'sab12', etichetta: 'sabato 12 dicembre', data: '2026-12-12' },
   { id: 'dom13', etichetta: 'domenica 13 dicembre', data: '2026-12-13', soloMattina: true },
@@ -124,7 +125,7 @@ export const proposte: Proposta[] = [
     nome: 'Mini Sessione',
     conArticolo: 'la Mini Sessione',
     prezzo: 190,
-    quando: 'sabato 12 dicembre, o domenica 6 e domenica 13 dicembre la mattina',
+    quando: 'sabato 5 e domenica 6, sabato 12 e domenica 13 dicembre, la domenica solo la mattina',
     durata: 'circa 20-25 minuti',
     sintesi: 'Solo il set di Natale, raccolta ed essenziale.',
     cosa: [
@@ -162,7 +163,7 @@ export const voci = {
 
 // Cosa si può regalare col buono nel vasetto. Le proposte di Natale valgono solo finché c'è il set.
 export const cosaRegalare = [
-  { id: 'mini', nome: 'la Mini Sessione di Natale', nota: '190 €, sabato 12 dicembre, o domenica 6 e 13 dicembre la mattina' },
+  { id: 'mini', nome: 'la Mini Sessione di Natale', nota: '190 €, nei weekend del 5-6 e 12-13 dicembre (la domenica solo la mattina)' },
   { id: 'cornice', nome: 'il Natale in Cornice', nota: '270 €, su appuntamento fino a gennaio' },
   { id: 'grande', nome: 'il Natale in Grande', nota: '350 €, su appuntamento fino a gennaio' },
   { id: 'progetto', nome: 'un altro progetto dello studio', nota: 'pancione, neonato, famiglia: ne parliamo insieme' },
